@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_navigation/src/routes/get_route.dart';
-import 'package:road_work_front_end/home/home_page.dart';
-import 'package:road_work_front_end/login/login_page.dart';
+import 'package:road_work_front_end/pages/home/home_page.dart';
+import 'package:road_work_front_end/pages/login/login_page.dart';
 
-import '../login/controller/login_controller.dart';
+import '../pages/login/controller/login_controller.dart';
 
 class RoutesClass {
   static String home = '/';

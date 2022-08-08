@@ -5,7 +5,7 @@ import 'package:road_work_front_end/routes/routes.dart';
 import 'package:road_work_front_end/theme/theme.dart';
 
 import 'localization/localization.dart';
-import 'login/controller/login_controller.dart';
+import 'pages/login/controller/login_controller.dart';
 
 void main() async {
   // WidgetsFlutterBinding.ensureInitialized();

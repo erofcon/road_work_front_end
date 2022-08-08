@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:get/get.dart';
-import 'package:road_work_front_end/login/models/login_request.dart';
-import 'package:road_work_front_end/login/models/login_response.dart';
+import 'package:road_work_front_end/pages/login/models/login_request.dart';
+import 'package:road_work_front_end/pages/login/models/login_response.dart';
 import 'package:road_work_front_end/utils/constants.dart';
 
 class LoginService extends GetConnect {

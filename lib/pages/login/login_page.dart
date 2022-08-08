@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:road_work_front_end/login/controller/login_controller.dart';
+import 'package:road_work_front_end/pages/login/controller/login_controller.dart';
 
-import '../routes/routes.dart';
-import '../utils/constants.dart';
+import '../../routes/routes.dart';
+import '../../utils/constants.dart';
 
 class LoginPage extends GetView<LoginController> {
   const LoginPage({Key? key}) : super(key: key);

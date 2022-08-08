@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:get_storage/get_storage.dart';
-import 'package:road_work_front_end/login/models/login_response.dart';
+import 'package:road_work_front_end/pages/login/models/login_response.dart';
 
 mixin LoginCache {
   Future<void> saveUser(LoginResponse model) async {

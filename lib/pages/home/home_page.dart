@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:road_work_front_end/navigation/side_bar.dart';
 
-import '../navigation/controller/navigation_controller.dart';
-import '../navigation/navigation_bar.dart';
+import 'package:road_work_front_end/navigation/controller/navigation_controller.dart';
+import 'package:road_work_front_end/navigation/navigation_bar.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);

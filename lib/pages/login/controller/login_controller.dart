@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:road_work_front_end/login/models/login_request.dart';
-import 'package:road_work_front_end/login/models/login_response.dart';
-import 'package:road_work_front_end/login/service/login_cache.dart';
-import 'package:road_work_front_end/login/service/login_service.dart';
+import 'package:road_work_front_end/pages/login/models/login_request.dart';
+import 'package:road_work_front_end/pages/login/models/login_response.dart';
+import 'package:road_work_front_end/pages/login/service/login_cache.dart';
+import 'package:road_work_front_end/pages/login/service/login_service.dart';
 import 'package:road_work_front_end/routes/routes.dart';
 
 class LoginController extends GetxController with LoginCache {
