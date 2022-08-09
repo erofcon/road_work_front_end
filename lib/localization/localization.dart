@@ -6,6 +6,8 @@ class Localization extends Translations {
   Map<String, Map<String, String>> get keys => {
         //English language
         'en_US': {
+
+          // SideBar
           "sidebar_title":"menu",
           "sidebar_info": "info",
           "sidebar_create_task":"Create task",
@@ -16,6 +18,8 @@ class Localization extends Translations {
         },
         //Russian language
         'ru_RU': {
+
+          // SideBar
           "sidebar_title":"меню",
           "sidebar_info": "Инфо",
           "sidebar_create_task":"Создать задачу",

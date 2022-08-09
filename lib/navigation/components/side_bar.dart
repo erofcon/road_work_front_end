@@ -56,7 +56,7 @@ class SideBar extends StatelessWidget {
 }
 
 class DrawerList extends StatelessWidget {
-  const DrawerList(
+   const DrawerList(
       {Key? key, required this.title, required this.icon, required this.press})
       : super(key: key);
 
