@@ -1,9 +1,8 @@
-
 import 'package:flutter/material.dart';
 
-class Themes{
+class Themes {
   final lightTheme = ThemeData().copyWith(
-    scaffoldBackgroundColor: const Color.fromRGBO(243,243,249, 1),
-  );
+      // scaffoldBackgroundColor: const Color.fromRGBO(243,243,249, 1),
+      );
   final darkTheme = ThemeData().copyWith();
 }

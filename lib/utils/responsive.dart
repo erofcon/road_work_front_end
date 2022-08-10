@@ -1,40 +1,50 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
-class Responsive extends StatelessWidget {
-  final Widget mobile;
-  final Widget? tablet;
-  final Widget desktop;
-
-  const Responsive({
+class ResponsiveBuilder extends StatelessWidget {
+  const ResponsiveBuilder({
+    required this.mobileBuilder,
+    required this.tabletBuilder,
+    required this.desktopBuilder,
     Key? key,
-    required this.mobile,
-    this.tablet,
-    required this.desktop,
   }) : super(key: key);
 
+  final Widget Function(
+      BuildContext context,
+      BoxConstraints constraints,
+      ) mobileBuilder;
+
+  final Widget Function(
+      BuildContext context,
+      BoxConstraints constraints,
+      ) tabletBuilder;
+
+  final Widget Function(
+      BuildContext context,
+      BoxConstraints constraints,
+      ) desktopBuilder;
 
   static bool isMobile(BuildContext context) =>
-      MediaQuery.of(context).size.width < 850;
+      MediaQuery.of(context).size.width < 600;
 
   static bool isTablet(BuildContext context) =>
       MediaQuery.of(context).size.width < 1100 &&
-          MediaQuery.of(context).size.width >= 850;
+          MediaQuery.of(context).size.width >= 600;
 
   static bool isDesktop(BuildContext context) =>
       MediaQuery.of(context).size.width >= 1100;
 
-
   @override
   Widget build(BuildContext context) {
-    if (context.width >= 1100) {
-      return desktop;
-    }
-    else if (context.width >= 850 && tablet != null) {
-      return tablet!;
-    }
-    else {
-      return mobile;
-    }
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth >= 1100) {
+          return desktopBuilder(context, constraints);
+        } else if (constraints.maxWidth >= 600) {
+          return tabletBuilder(context, constraints);
+        } else {
+          return mobileBuilder(context, constraints);
+        }
+      },
+    );
   }
 }

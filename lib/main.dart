@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -39,6 +41,7 @@ class MyApp extends GetWidget<LoginController> {
               darkTheme: Themes().darkTheme,
               translations: Localization(),
               locale: const Locale('ru', 'RU'),
+              scrollBehavior: CustomScrollBehaviour(),
               fallbackLocale: const Locale('en', 'US'));
         } else {
           return const Center(
@@ -48,4 +51,12 @@ class MyApp extends GetWidget<LoginController> {
       },
     );
   }
+}
+
+class CustomScrollBehaviour extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+  };
 }

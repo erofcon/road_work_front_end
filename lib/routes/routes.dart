@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:road_work_front_end/pages/home/home_page.dart';
+import 'package:road_work_front_end/pages/dashboard/bindings/dashboard_binding.dart';
+import 'package:road_work_front_end/pages/dashboard/dashboard_page.dart';
 import 'package:road_work_front_end/pages/login/login_page.dart';
 
 import '../pages/login/controller/login_controller.dart';
@@ -11,7 +12,7 @@ class RoutesClass {
 
   static List<GetPage> routes = [
     GetPage(
-        name: home, page: () => const HomePage(), middlewares: [AuthGuard()]),
+        name: home, page: () => const HomePage(), binding: DashboardBinding(), middlewares: [AuthGuard()]),
     GetPage(
       name: login,
       page: () => const LoginPage(),
