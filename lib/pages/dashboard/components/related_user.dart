@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:road_work_front_end/pages/dashboard/controller/dashboard_controller.dart';
 
-class RelatedUsers extends StatelessWidget {
+class RelatedUsers extends GetView<DashboardController> {
   RelatedUsers({
     Key? key,
   }) : super(key: key);
@@ -13,9 +15,10 @@ class RelatedUsers extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: List.generate(
-        (member.length > maxDisplayPeople) ? maxDisplayPeople : member.length,
+        controller.relatedUser.length,
         (index) => SimpleUserProfile(
-          name: member[index],
+          firstName: controller.relatedUser[index].firstName,
+          lastName: controller.relatedUser[index].lastName,
           onPressed: () {},
         ),
       ).toList(),
@@ -25,12 +28,14 @@ class RelatedUsers extends StatelessWidget {
 
 class SimpleUserProfile extends StatelessWidget {
   const SimpleUserProfile({
-    required this.name,
     required this.onPressed,
+    required this.firstName,
+    required this.lastName,
     Key? key,
   }) : super(key: key);
 
-  final String name;
+  final String firstName;
+  final String lastName;
   final Function() onPressed;
 
   @override
@@ -53,12 +58,19 @@ class SimpleUserProfile extends StatelessWidget {
     return CircleAvatar(
       radius: 20,
       backgroundColor: Colors.orange.withOpacity(.2),
+      child: Text(
+        firstName[0].toUpperCase() + lastName[0].toUpperCase(),
+        style: const TextStyle(
+          color: Colors.orange,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 
   Widget _buildName() {
     return Text(
-      name,
+      '$firstName $lastName',
       style: const TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 13,

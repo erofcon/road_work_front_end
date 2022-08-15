@@ -96,6 +96,7 @@ class HomePage extends GetView<DashboardController> {
                     Flexible(
                         flex: constraints.maxWidth > 1350 ? 3 : 4,
                         child: SingleChildScrollView(
+                          // child: BuildSidebar(),
                           child: _buildSidebar(),
                         )),
                     Flexible(
@@ -135,8 +136,6 @@ class HomePage extends GetView<DashboardController> {
               horizontal: UiConstants.defaultPadding),
           child: UserProfile(
             onPressed: () {},
-            userName: 'Temirlan Shereuzhev',
-            job: 'administrator',
             imageUrl: 'https://avatarfiles.alphacoders.com/162/162739.jpg',
           ),
         ),
@@ -165,14 +164,21 @@ class HomePage extends GetView<DashboardController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           const SizedBox(height: UiConstants.defaultPadding),
-          if (onPressedMenu != null)
-            Padding(
-              padding: const EdgeInsets.only(right: UiConstants.defaultPadding),
-              child: IconButton(
-                onPressed: onPressedMenu,
-                icon: const Icon(Icons.menu),
-              ),
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              if (onPressedMenu != null)
+                IconButton(onPressed: () =>controller.openDrawer(), icon: const Icon(Icons.menu)),
+              const Spacer(),
+              IconButton(onPressed: () {}, icon: const Icon(Icons.notifications_none_rounded)),
+              IconButton(
+                  onPressed: () {},
+                  icon: const CircleAvatar(
+                    backgroundColor: Colors.white,
+                    backgroundImage: AssetImage('assets/language/ru.png'),
+                  )),
+            ],
+          ),
           Text(
             DateTime.now().formatdMMMMY(),
             style: const TextStyle(
@@ -203,16 +209,24 @@ class HomePage extends GetView<DashboardController> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              const Text(
-                'Статистика задач',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
+              const Expanded(
+                child: Text(
+                  'Статистика задач',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ),
               IconButton(
                 onPressed: () {},
-                icon: const Icon(Icons.add_chart),
+                icon: const Icon(
+                  Icons.add_chart,
+                  color: Colors.blue,
+                  size: 25,
+                ),
                 tooltip: "отчет",
               )
             ],

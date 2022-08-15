@@ -1,11 +1,12 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:road_work_front_end/shared_components/task_card_list.dart';
+import 'package:get/get.dart';
+import 'package:road_work_front_end/pages/dashboard/controller/dashboard_controller.dart';
 import 'package:road_work_front_end/utils/constants.dart';
 
 import '../../../shared_components/chart_data.dart';
 
-class TasksStatistic extends StatelessWidget {
+class TasksStatistic extends GetView<DashboardController> {
   const TasksStatistic({Key? key}) : super(key: key);
 
   @override
@@ -19,9 +20,15 @@ class TasksStatistic extends StatelessWidget {
             shrinkWrap: true,
             itemCount: 3,
             itemBuilder: (context, index) => Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: UiConstants.defaultPadding),
-              child: StatisticTaskInfo(hoverColor: taskData[index].primary.withOpacity(0.4), borderColor: taskData[index].primary),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: UiConstants.defaultPadding),
+              child: StatisticTaskInfo(
+                  title: controller.taskData[index].title,
+                  subtitle: controller.taskData[index].count.toString(),
+                  hoverColor:
+                      controller.taskData[index].primary.withOpacity(.1),
+                  borderColor: controller.taskData[index].primary,
+                  iconWidget: controller.taskData[index].iconWidget),
             ),
           ),
         ],
@@ -31,11 +38,20 @@ class TasksStatistic extends StatelessWidget {
 }
 
 class StatisticTaskInfo extends StatelessWidget {
-  const StatisticTaskInfo({Key? key, required this.hoverColor, required this.borderColor})
+  const StatisticTaskInfo(
+      {Key? key,
+      required this.hoverColor,
+      required this.borderColor,
+      required this.title,
+      required this.subtitle,
+      required this.iconWidget})
       : super(key: key);
 
   final Color hoverColor;
   final Color borderColor;
+  final String title;
+  final String subtitle;
+  final Widget iconWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +67,7 @@ class StatisticTaskInfo extends StatelessWidget {
             UiConstants.defaultPadding,
           ),
         ),
-        leading: _buildIcon(),
+        leading: iconWidget,
         title: _buildTitle(),
         subtitle: _buildSubtitle(),
       ),
@@ -59,26 +75,19 @@ class StatisticTaskInfo extends StatelessWidget {
   }
 
   Widget _buildTitle() {
-    return const Text(
-      '23.10.1996 16:00',
-      style: TextStyle(fontWeight: FontWeight.bold),
+    return Text(
+      title,
+      style: const TextStyle(fontWeight: FontWeight.bold),
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
     );
   }
 
   Widget _buildSubtitle() {
-    return const Text(
-      'ямочный ремонт',
+    return Text(
+      subtitle,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
-    );
-  }
-
-  Widget _buildIcon() {
-    return const CircleAvatar(
-      backgroundImage: NetworkImage(
-          'https://i.pinimg.com/originals/e9/e0/75/e9e075386271a5449e62e885cd8fa226.jpg'),
     );
   }
 }

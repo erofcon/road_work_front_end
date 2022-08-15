@@ -1,48 +1,61 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:road_work_front_end/pages/dashboard/models/related_user_response.dart';
+import 'package:road_work_front_end/service/api_service.dart';
 import 'package:road_work_front_end/shared_components/task_card_list.dart';
 
 import '../models/count_tasks_response.dart';
-import '../service/dashboard_service.dart';
 
 class DashboardController extends GetxController {
-  final DashboardService _dashboardService = DashboardService();
+  final ApiService _apiService = ApiService();
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final isLoading = true.obs;
-  late Rx<CountTasks> countTasks;
-  late Rx<List<TaskCardInfo>> taskData;
+  late CountTasks countTasks;
+  late List<TaskCardInfo> taskData;
+  late List<RelatedUser> relatedUser;
 
   @override
   void onInit() {
-    fetchCountTasks();
+    getCountTasks();
     super.onInit();
   }
 
-  void fetchCountTasks() async {
+  void getCountTasks() async {
     isLoading(true);
     try {
-      var result = await _dashboardService.getCountTasks();
+      var result = await _apiService.getCountTasks();
       if (result != null) {
-        countTasks = Rx<CountTasks>(result);
-
-        taskData = Rx([
+        countTasks = result;
+        taskData = [
           TaskCardInfo(
-              title: 'Текущие задачи',
-              count: 120,
+              title: 'current_tasks'.tr,
+              count: countTasks.countCurrentTasks,
               primary: Colors.orange,
-              textColor: Colors.white),
+              textColor: Colors.white,
+              iconWidget: const Icon(Icons.list_alt_outlined,
+                  size: 34, color: Colors.orange)),
           TaskCardInfo(
-              title: 'Выполненые задачи',
-              count: 12,
+              title: 'completed_tasks'.tr,
+              count: countTasks.countIsDoneTasks,
               primary: Colors.green,
-              textColor: Colors.white),
+              textColor: Colors.white,
+              iconWidget: const Icon(
+                Icons.cloud_done_rounded,
+                size: 34,
+                color: Colors.green,
+              )),
           TaskCardInfo(
-              title: 'Просроченные задачи',
-              count: 12,
+              title: 'expired_tasks'.tr,
+              count: countTasks.countExpiredTasks,
               primary: Colors.red,
-              textColor: Colors.white),
-        ]);
+              textColor: Colors.white,
+              iconWidget: const Icon(Icons.disabled_by_default_outlined,
+                  size: 34, color: Colors.red)),
+        ];
       }
+
+      var related = await _apiService.getRelatedUser();
+      relatedUser = related!;
     } finally {
       isLoading(false);
     }

@@ -111,14 +111,9 @@ class SubmitButton extends GetView<LoginController> {
     return Obx(() => ElevatedButton(
           onPressed: () async {
             bool res = await controller.login();
-            if(res){
+            if (res) {
               Get.offNamed(RoutesClass.home);
             }
-            // if (controller.formKey.value.currentState!.validate()) {
-            //   controller.sendingData.toggle();
-            //   await controller.login();
-            //   controller.sendingData.toggle();
-            // }
           },
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(Colors.teal),

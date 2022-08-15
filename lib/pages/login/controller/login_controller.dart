@@ -4,11 +4,12 @@ import 'package:get_storage/get_storage.dart';
 import 'package:road_work_front_end/pages/login/models/login_request.dart';
 import 'package:road_work_front_end/pages/login/models/login_response.dart';
 import 'package:road_work_front_end/pages/login/service/login_cache.dart';
-import 'package:road_work_front_end/pages/login/service/login_service.dart';
-import 'package:road_work_front_end/routes/routes.dart';
+
+
+import '../../../service/api_service.dart';
 
 class LoginController extends GetxController with LoginCache {
-  final LoginService _loginService = LoginService();
+  final ApiService _loginService = ApiService();
 
   final TextEditingController loginEditingController = TextEditingController();
   final TextEditingController passwordEditingController =
@@ -21,11 +22,10 @@ class LoginController extends GetxController with LoginCache {
   final isLogin = false.obs;
 
   User? user;
-  String? token;
 
   void checkLoginStatus() {
     final box = GetStorage();
-    token = box.read('token');
+    var token = box.read('token');
     if (token == null) {
       isLogin.value = false;
       return;
@@ -50,7 +50,6 @@ class LoginController extends GetxController with LoginCache {
 
     if (loginResponse != null) {
       user = loginResponse.user;
-      token = loginResponse.access;
       await saveUser(loginResponse);
       sendingData.toggle();
       isLogin.value = true;

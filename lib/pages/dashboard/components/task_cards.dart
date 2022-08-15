@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:road_work_front_end/pages/dashboard/controller/dashboard_controller.dart';
 import 'package:road_work_front_end/utils/constants.dart';
 
 import '../../../shared_components/task_card_list.dart';
 
-class TaskCards extends StatelessWidget {
+class TaskCards extends GetView<DashboardController> {
   const TaskCards({Key? key}) : super(key: key);
 
   @override
@@ -16,16 +18,15 @@ class TaskCards extends StatelessWidget {
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
           physics: const BouncingScrollPhysics(),
-          itemCount: taskData.length,
+          itemCount: controller.taskData.length,
           itemBuilder: (context, index) => Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: UiConstants.defaultPadding),
-            child: CardTask(taskData: taskData[index],),
+            child: CardTask(taskData: controller.taskData[index],),
           ),
         ),
       ),
     );
-    // return CardTask(label: "hello world", jobDesk: '123', dueDate: DateTime.now(), primary: Colors.green, onPrimary: Colors.white);
   }
 }
 
@@ -99,22 +100,15 @@ class CardTask extends StatelessWidget {
   }
 
   Widget _buildTaskCount() {
-    return Container(
-      // decoration: BoxDecoration(
-      //   color: onPrimary.withOpacity(.3),
-      //   borderRadius: BorderRadius.circular(10),
-      // ),
-      // padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      child: Text(
-        taskData.count.toString(),
-        style: TextStyle(
-          color: taskData.textColor,
-          fontSize: 40,
-          letterSpacing: 1,
-        ),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
+    return Text(
+      taskData.count.toString(),
+      style: TextStyle(
+        color: taskData.textColor,
+        fontSize: 40,
+        letterSpacing: 1,
       ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
     );
   }
 

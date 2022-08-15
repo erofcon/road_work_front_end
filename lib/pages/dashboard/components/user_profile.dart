@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:road_work_front_end/pages/login/controller/login_controller.dart';
 import 'package:road_work_front_end/utils/constants.dart';
 
-class UserProfile extends StatelessWidget {
+class UserProfile extends GetView<LoginController> {
   const UserProfile({
-    required this.userName,
-    required this.job,
     required this.onPressed,
     this.imageUrl,
     Key? key,
   }) : super(key: key);
 
   final String? imageUrl;
-  final String userName;
-  final String job;
   final Function() onPressed;
 
   @override
@@ -34,7 +32,7 @@ class UserProfile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildName(),
-                    _buildJobdesk(),
+                    _buildJob(),
                   ],
                 ),
               )
@@ -48,13 +46,13 @@ class UserProfile extends StatelessWidget {
   Widget _buildImage() {
     return CircleAvatar(
       radius: 25,
-      backgroundImage: imageUrl!=null?NetworkImage(imageUrl!):null,
+      backgroundImage: imageUrl != null ? NetworkImage(imageUrl!) : null,
     );
   }
 
   Widget _buildName() {
     return Text(
-      userName,
+      '${controller.user?.firstName} ${controller.user?.lastName}',
       style: const TextStyle(
         fontWeight: FontWeight.bold,
       ),
@@ -63,9 +61,18 @@ class UserProfile extends StatelessWidget {
     );
   }
 
-  Widget _buildJobdesk() {
+  Widget _buildJob() {
     return Text(
-      job,
+      (() {
+        if (controller.user?.isSuperUser ?? false) {
+          return 'is_admin'.tr;
+        } else if (controller.user?.isCreator ?? false) {
+          return 'is_creator'.tr;
+        } else if (controller.user?.isExecutor ?? false) {
+          return 'is_executor'.tr;
+        }
+        return '';
+      })(),
       style: const TextStyle(
         fontWeight: FontWeight.w300,
       ),
