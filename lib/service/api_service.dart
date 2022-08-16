@@ -10,9 +10,10 @@ import '../pages/dashboard/models/related_user_response.dart';
 import '../pages/login/models/login_request.dart';
 import '../pages/login/models/login_response.dart';
 import '../pages/login/service/login_cache.dart';
+import '../pages/task/models/task_response.dart';
+import '../pages/task_list/models/task_list.dart';
 
 class ApiService with LoginCache {
-
   Future<LoginResponse?> login(LoginRequest model) async {
     final response =
         await Dio().post(ApiUrl.authenticate, data: model.toJson());
@@ -122,5 +123,73 @@ class ApiService with LoginCache {
     }
 
     return false;
+  }
+
+  Future<void> runDetection(
+      DateTime dateTime,
+      PlatformFile file,
+      Function(dynamic send, dynamic total) uploadProgress,
+      Function() uploadComplete,
+      Function() uploadFailure) async {
+    final token = await getToken();
+    if (token != null) {
+      try {
+        Map<String, String> headers = {"Authorization": "Bearer $token"};
+
+        FormData formData = FormData.fromMap({
+          'date': dateTime.toString(),
+          'video':
+              await MultipartFile.fromFile(file.path!, filename: file.name),
+        });
+
+        Response response = await Dio().post(ApiUrl.uploadDetection,
+            data: formData,
+            options: Options(headers: headers),
+            onSendProgress: uploadProgress);
+
+        if (response.statusCode! >= 200 && response.statusCode! < 210) {
+          uploadComplete();
+        } else {
+          uploadFailure();
+        }
+      } catch (e) {
+        uploadFailure();
+      }
+    }
+  }
+
+  Future<TaskList?> getTaskList() async {
+    final token = await getToken();
+
+    if (token != null) {
+      Map<String, String> headers = {"Authorization": "Bearer $token"};
+
+      final response = await Dio()
+          .get(ApiUrl.getTaskList, options: Options(headers: headers));
+      if (response.statusCode == HttpStatus.ok) {
+        return taskResult(response.toString());
+      } else {
+        return null;
+      }
+    }
+    return null;
+  }
+
+  Future<TaskResponseModel?> getTask(String id) async {
+    final token = await getToken();
+
+    if (token != null) {
+      Map<String, String> headers = {"Authorization": "Bearer $token"};
+
+      final response = await Dio()
+          .get('${ApiUrl.getTaskList}/$id', options: Options(headers: headers));
+      if (response.statusCode == HttpStatus.ok) {
+        return taskResponseModel(response.toString());
+      } else {
+        return null;
+      }
+    }
+
+    return null;
   }
 }

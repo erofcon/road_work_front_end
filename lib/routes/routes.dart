@@ -4,14 +4,20 @@ import 'package:road_work_front_end/pages/create_task/create_task.dart';
 import 'package:road_work_front_end/pages/dashboard/bindings/dashboard_binding.dart';
 import 'package:road_work_front_end/pages/dashboard/dashboard_page.dart';
 import 'package:road_work_front_end/pages/login/login_page.dart';
+import 'package:road_work_front_end/pages/task_list/task_list_page.dart';
 
 import '../pages/create_task/bindings/create_task_bindings.dart';
 import '../pages/login/controller/login_controller.dart';
+import '../pages/task/bindings/task_bindings.dart';
+import '../pages/task/task_page.dart';
+import '../pages/task_list/bindings/task_list_bindings.dart';
 
 class RoutesClass {
   static String home = '/';
   static String login = '/login';
   static String create = '/create';
+  static String taskList = '/list';
+  static String task = '/task';
 
   static List<GetPage> routes = [
     GetPage(
@@ -27,6 +33,16 @@ class RoutesClass {
         name: create,
         page: () => const CreateTask(),
         binding: CreateTaskBinding(),
+        middlewares: [AuthGuard()]),
+    GetPage(
+        name: taskList,
+        page: () => const TaskListPage(),
+        binding: TaskListBinding(),
+        middlewares: [AuthGuard()]),
+    GetPage(
+        name: task,
+        page: () => const TaskPage(),
+        binding: TaskBinding(),
         middlewares: [AuthGuard()]),
   ];
 }

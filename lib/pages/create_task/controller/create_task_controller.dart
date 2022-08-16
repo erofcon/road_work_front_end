@@ -3,12 +3,15 @@ import 'dart:async';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:large_file_uploader/large_file_uploader.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:road_work_front_end/pages/create_task/models/task_category_response.dart';
 import 'package:road_work_front_end/pages/dashboard/controller/dashboard_controller.dart';
 import 'package:road_work_front_end/pages/dashboard/models/related_user_response.dart';
 
 import '../../../service/api_service.dart';
+import '../../../service/web_service.dart';
+
 
 class CreateTaskController extends GetxController {
   final isLoading = true.obs;
@@ -27,6 +30,7 @@ class CreateTaskController extends GetxController {
   dynamic videoFile;
   final isUploadVideo = false.obs;
   bool errorSelect = false;
+  final uploadProgress = 0.obs;
 
   @override
   void onInit() {
@@ -84,7 +88,6 @@ class CreateTaskController extends GetxController {
     return result;
   }
 
-
   void selectDateTime(dateTime) async {
     runDateTime = dateTime;
     update();
@@ -99,32 +102,63 @@ class CreateTaskController extends GetxController {
     update();
   }
 
-  // void webSelectFile() {
-  //   LargeFileUploader().pick(
-  //       type: FileTypes.video,
-  //       callback: (file) {
-  //         videoFile = file;
-  //         update();
-  //       });
-  // }
+  void webSelectFile() async {
+    LargeFileUploader().pick(
+        type: FileTypes.video,
+        callback: (file) {
+          videoFile = file;
+          update();
+        });
 
-  void uploadVideo() async{
-    if(runDateTime == null || videoFile == null){
+    // var z= await WebHelpers.webSelectFile();
+    // print(z);
+    // videoFile = await WebHelpers.webSelectFile();
+  }
+
+  void uploadVideo() async {
+    uploadProgress(0);
+    if (runDateTime == null || videoFile == null) {
       errorSelect = true;
       update();
       return;
-    }else{
+    } else {
       errorSelect = false;
       update();
       isUploadVideo(true);
-      if(GetPlatform.isWeb){
-        // WebService().uploadDetection(runDateTime!, videoFile, (progress) => null, (responce) => null, () => null);
+      if (GetPlatform.isWeb) {
+        WebService().uploadDetection(runDateTime!, videoFile, (p) =>progress(p), (responce) => uploadComplete(), () => uploadError);
+      } else {
+        await ApiService().runDetection(
+            runDateTime!,
+            videoFile,
+            (send, total) => progress(send, total: total),
+            uploadComplete,
+            uploadError);
       }
 
-      isUploadVideo(false);
     }
-
   }
 
-}
+  void progress(send, {total}) {
+    if (total != null) {
+      uploadProgress((send / total * 100).toInt());
+    } else {
+      uploadProgress(send);
+    }
+  }
 
+  void uploadComplete() {
+    Get.snackbar("Успех!",
+        "видео отправлено на детектирование. после окончания вы получите уведомление",
+        backgroundColor: Colors.green,
+        icon: const Icon(Icons.check_circle_outline));
+    isUploadVideo(false);
+  }
+
+  void uploadError() {
+    Get.snackbar(
+        "Ошибка!", "не удалось загрузить видео. повторите попытку позже",
+        backgroundColor: Colors.red, icon: const Icon(Icons.error));
+    isUploadVideo(false);
+  }
+}

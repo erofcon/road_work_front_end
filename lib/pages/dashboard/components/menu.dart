@@ -15,7 +15,9 @@ class Menu extends StatelessWidget {
         DrawerList(
             title: 'sidebar_task_list'.tr,
             icon: Icons.list_alt_outlined,
-            press: () {}),
+            press: () {
+              Get.toNamed(RoutesClass.taskList);
+            }),
         DrawerList(
             title: 'sidebar_result_detection'.tr,
             icon: Icons.reset_tv_outlined,

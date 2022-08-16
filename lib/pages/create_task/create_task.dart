@@ -25,9 +25,9 @@ class CreateTask extends GetView<CreateTaskController> {
                 ],
               ),
             ),
-            body: TabBarView(
+            body: const TabBarView(
               children: <Widget>[
-                const SingleTask(),
+                SingleTask(),
                 RunDetection()
               ],
             ),

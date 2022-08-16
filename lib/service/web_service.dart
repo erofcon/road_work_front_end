@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:large_file_uploader/large_file_uploader.dart';
 
 import '../pages/login/service/login_cache.dart';
@@ -8,7 +6,7 @@ import '../utils/constants.dart';
 class WebService with LoginCache {
   Future<void> uploadDetection(
       DateTime dateTime,
-      File file,
+      dynamic file,
       Function(dynamic progress) uploadProgress,
       Function(dynamic responce) uploadComplete,
       Function() uploadFailure) async {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:road_work_front_end/pages/create_task/controller/create_task_controller.dart';
 import 'package:road_work_front_end/utils/constants.dart';
 
@@ -78,7 +79,13 @@ class RunDetection extends StatelessWidget {
                 height: UiConstants.defaultPadding,
               ),
               ElevatedButton(
-                  onPressed: () => controller.ioSelectVideo(),
+                  onPressed: (){
+                    if(GetPlatform.isWeb){
+                      controller.webSelectFile();
+                    }else{
+                      controller.ioSelectVideo();
+                    }
+                  },
                   style: ElevatedButton.styleFrom(
                     elevation: 0.0,
                     primary: Colors.white,
@@ -128,7 +135,12 @@ class UploadProgress extends GetView<CreateTaskController> {
   Widget build(BuildContext context) {
     return Obx(() {
       if (controller.isUploadVideo.isTrue) {
-        return const Center(child: CircularProgressIndicator());
+        return  Center(child: CircularPercentIndicator(
+          radius: 50.0,
+          lineWidth: 10.0,
+          percent: controller.uploadProgress.value/100,
+          progressColor: Theme.of(context).primaryColor,
+        ));
       } else {
         return ElevatedButton(
           onPressed: () => controller.uploadVideo(),
