@@ -151,7 +151,7 @@ class HomePage extends GetView<DashboardController> {
           endIndent: 20,
           height: 60,
         ),
-        RelatedUsers(),
+        const RelatedUsers(),
       ],
     );
   }

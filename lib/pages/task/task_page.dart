@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:road_work_front_end/pages/task/controller/task_controller.dart';
-import 'package:road_work_front_end/utils/helpers/extension.dart';
 
 import '../../utils/constants.dart';
 import '../../utils/responsive.dart';
 import 'components/answer.dart';
+import 'components/task_location.dart';
+import 'components/user.dart';
 import 'components/gallery.dart';
+import 'components/head_task_page.dart';
 import 'components/heead_task_answer.dart';
 
 class TaskPage extends GetView<TaskController> {
@@ -25,21 +27,26 @@ class TaskPage extends GetView<TaskController> {
           } else {
             return ResponsiveBuilder(
               mobileBuilder: (context, constraints) {
-                return Container();
+                return SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildTaskContent(),
+                      const SizedBox(height: UiConstants.defaultPadding * 2),
+                      _buildMapContent(),
+                    ],
+                  ),
+                );
               },
               tabletBuilder: (context, constraints) {
-                return Container();
-              },
-              desktopBuilder: (context, constraints) {
                 return Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Flexible(
-                      flex: constraints.maxWidth > 1350 ? 10 : 9,
+                      flex: constraints.maxWidth > 800 ? 8 : 7,
                       child: SingleChildScrollView(
                         controller: ScrollController(),
                         child: _buildTaskContent(),
-                        // child: const Gallery(),
                       ),
                     ),
                     SizedBox(
@@ -50,7 +57,32 @@ class TaskPage extends GetView<TaskController> {
                       flex: 4,
                       child: SingleChildScrollView(
                         controller: ScrollController(),
-                        child: _buildMap(),
+                        child: _buildMapContent(),
+                      ),
+                    ),
+                  ],
+                );
+              },
+              desktopBuilder: (context, constraints) {
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Flexible(
+                      flex: constraints.maxWidth > 1350 ? 10 : 9,
+                      child: SingleChildScrollView(
+                        controller: ScrollController(),
+                        child: _buildTaskContent(),
+                      ),
+                    ),
+                    SizedBox(
+                      height: context.height,
+                      child: const VerticalDivider(),
+                    ),
+                    Flexible(
+                      flex: 4,
+                      child: SingleChildScrollView(
+                        controller: ScrollController(),
+                        child: _buildMapContent(),
                       ),
                     ),
                   ],
@@ -63,35 +95,38 @@ class TaskPage extends GetView<TaskController> {
     );
   }
 
-  Widget _buildTaskContent(){
-    return Padding(padding: const EdgeInsets.symmetric(horizontal: UiConstants.defaultPadding*2),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const SizedBox(height: UiConstants.defaultPadding),
-        Text(
-          DateTime.parse(controller.task.value.createDateTime).formatdMMMMY(),
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: UiConstants.defaultPadding),
-        const Gallery(),
-        const SizedBox(height: UiConstants.defaultPadding*2),
-        const HeadTaskAnswer(),
-        const SizedBox(height: UiConstants.defaultPadding),
-        const TaskAnswerList(),
-      ],
-    ),
-
-
-      );
+  Widget _buildTaskContent() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+          horizontal: UiConstants.defaultPadding * 2),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const <Widget>[
+          SizedBox(height: UiConstants.defaultPadding),
+          HeadTaskPage(),
+          SizedBox(height: UiConstants.defaultPadding * 2),
+          Gallery(),
+          SizedBox(height: UiConstants.defaultPadding * 2),
+          HeadTaskAnswer(),
+          SizedBox(height: UiConstants.defaultPadding),
+          TaskAnswerList(),
+        ],
+      ),
+    );
   }
 
-  Widget _buildMap(){
-    return Container();
+  Widget _buildMapContent() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+          horizontal: UiConstants.defaultPadding * 2),
+      child: Column(
+          children: <Widget>[
+            const User(),
+            const SizedBox(height: UiConstants.defaultPadding * 2),
+            if(controller.task.value.latitude!=null && controller.task.value.longitude!=null)
+              const TaskLocation()
+          ],
+      ),
+    );
   }
-
-
 }

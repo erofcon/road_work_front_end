@@ -3,12 +3,9 @@ import 'package:get/get.dart';
 import 'package:road_work_front_end/pages/dashboard/controller/dashboard_controller.dart';
 
 class RelatedUsers extends GetView<DashboardController> {
-  RelatedUsers({
+  const RelatedUsers({
     Key? key,
   }) : super(key: key);
-
-  final List<String> member = ['Ivan Ivanov', 'Petr Petrov'];
-  final int maxDisplayPeople = 2;
 
   @override
   Widget build(BuildContext context) {
