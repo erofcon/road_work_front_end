@@ -10,10 +10,12 @@ class CreateTask extends GetView<CreateTaskController> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx((){
-      if(controller.isLoading.isTrue){
-        return const Center(child: CircularProgressIndicator(),);
-      }else{
+    return Obx(() {
+      if (controller.isLoading.isTrue) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      } else {
         return DefaultTabController(
           length: 2,
           child: Scaffold(
@@ -26,15 +28,11 @@ class CreateTask extends GetView<CreateTaskController> {
               ),
             ),
             body: const TabBarView(
-              children: <Widget>[
-                SingleTask(),
-                RunDetection()
-              ],
+              children: <Widget>[SingleTask(), RunDetection()],
             ),
           ),
         );
       }
-    }
-    );
+    });
   }
 }

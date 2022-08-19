@@ -5,11 +5,11 @@ import 'package:road_work_front_end/pages/task/controller/task_controller.dart';
 import '../../utils/constants.dart';
 import '../../utils/responsive.dart';
 import 'components/answer.dart';
-import 'components/task_location.dart';
-import 'components/user.dart';
 import 'components/gallery.dart';
 import 'components/head_task_page.dart';
 import 'components/heead_task_answer.dart';
+import 'components/task_location.dart';
+import 'components/user.dart';
 
 class TaskPage extends GetView<TaskController> {
   const TaskPage({Key? key}) : super(key: key);
@@ -116,17 +116,17 @@ class TaskPage extends GetView<TaskController> {
   }
 
   Widget _buildMapContent() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-          horizontal: UiConstants.defaultPadding * 2),
-      child: Column(
-          children: <Widget>[
-            const User(),
-            const SizedBox(height: UiConstants.defaultPadding * 2),
-            if(controller.task.value.latitude!=null && controller.task.value.longitude!=null)
-              const TaskLocation()
-          ],
-      ),
+    return Column(
+      children: <Widget>[
+        const Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: UiConstants.defaultPadding * 2),
+            child: User()),
+        const SizedBox(height: UiConstants.defaultPadding * 2),
+        if (controller.task.value.latitude != null &&
+            controller.task.value.longitude != null)
+          const TaskLocation()
+      ],
     );
   }
 }

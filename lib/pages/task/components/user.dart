@@ -28,6 +28,7 @@ class User extends GetView<TaskController> {
             ),
           ),
         ),
+        const SizedBox(height: UiConstants.defaultPadding),
         CircleAvatar(
           radius: 55,
           backgroundColor: Colors.orange.withOpacity(.2),

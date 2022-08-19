@@ -13,14 +13,15 @@ class TaskAnswerList extends GetView<TaskController> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: BoxConstraints(maxHeight: context.height / 2),
-      child: ListView.builder(
-        shrinkWrap: true,
-        scrollDirection: Axis.vertical,
-        controller: ScrollController(),
-        itemCount: controller.task.value.answer.length,
-        itemBuilder: (context, index) => RecentTask(index: index),
+    return Obx(()=> Container(
+        constraints: BoxConstraints(maxHeight: context.height / 2),
+        child: ListView.builder(
+          shrinkWrap: true,
+          scrollDirection: Axis.vertical,
+          controller: ScrollController(),
+          itemCount: controller.task.value.answer.length,
+          itemBuilder: (context, index) => RecentTask(index: index),
+        ),
       ),
     );
   }

@@ -15,13 +15,13 @@ class TaskResponseModel {
     required this.creator,
     required this.images,
     required this.answer,
-    required this.state,
     required this.createDateTime,
     required this.leadDateTime,
     required this.description,
     required this.latitude,
     required this.longitude,
     required this.isDone,
+    required this.isExpired,
   });
 
   late final int id;
@@ -30,11 +30,11 @@ class TaskResponseModel {
   late final Creator creator;
   late final List<Images?> images;
   late final List<Answer> answer;
-  late final String state;
   late final String createDateTime;
   late final String leadDateTime;
   late final String description;
-  late final bool isDone;
+  late bool isDone;
+  late final bool isExpired;
   double? latitude;
   double? longitude;
 
@@ -45,13 +45,13 @@ class TaskResponseModel {
     creator = Creator.fromJson(json['creator']);
     images = List.from(json['images']).map((e) => Images.fromJson(e)).toList();
     answer = List.from(json['answer']).map((e) => Answer.fromJson(e)).toList();
-    state = json['state'];
     createDateTime = json['createDateTime'];
     leadDateTime = json['leadDateTime'];
     description = json['description'];
     latitude = json['latitude'];
     longitude = json['longitude'];
     isDone = json['is_done'];
+    isExpired = json['is_expired'];
   }
 
   Map<String, dynamic> toJson() {
@@ -62,7 +62,6 @@ class TaskResponseModel {
     data['creator'] = creator.toJson();
     data['images'] = images.map((e) => e?.toJson()).toList();
     data['answer'] = answer.map((e) => e.toJson()).toList();
-    data['state'] = state;
     data['createDateTime'] = createDateTime;
     data['leadDateTime'] = leadDateTime;
     data['description'] = description;

@@ -39,24 +39,27 @@ class Results {
     required this.category,
     required this.executor,
     required this.creator,
-    required this.state,
     required this.createDateTime,
+    required this.isDone,
+    required this.isExpired,
   });
 
   late final int id;
   late final Category category;
   late final Executor executor;
   late final Creator creator;
-  late final String state;
   late final String createDateTime;
+  late bool isDone;
+  late final bool isExpired;
 
   Results.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     category = Category.fromJson(json['category']);
     executor = Executor.fromJson(json['executor']);
     creator = Creator.fromJson(json['creator']);
-    state = json['state'];
     createDateTime = json['createDateTime'];
+    isDone = json['is_done'];
+    isExpired = json['is_expired'];
   }
 
   Map<String, dynamic> toJson() {
@@ -65,7 +68,6 @@ class Results {
     data['category'] = category.toJson();
     data['executor'] = executor.toJson();
     data['creator'] = creator.toJson();
-    data['state'] = state;
     data['createDateTime'] = createDateTime;
     return data;
   }

@@ -9,7 +9,6 @@ import 'package:road_work_front_end/pages/login/service/login_cache.dart';
 import '../../../service/api_service.dart';
 
 class LoginController extends GetxController with LoginCache {
-  final ApiService _loginService = ApiService();
 
   final TextEditingController loginEditingController = TextEditingController();
   final TextEditingController passwordEditingController =
@@ -46,7 +45,7 @@ class LoginController extends GetxController with LoginCache {
     LoginRequest loginRequest = LoginRequest(
         username: loginEditingController.text,
         password: passwordEditingController.text);
-    LoginResponse? loginResponse = await _loginService.login(loginRequest);
+    LoginResponse? loginResponse = await ApiService().login(loginRequest);
 
     if (loginResponse != null) {
       user = loginResponse.user;

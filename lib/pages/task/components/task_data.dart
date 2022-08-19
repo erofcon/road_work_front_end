@@ -37,7 +37,17 @@ class TaskData extends GetView<TaskController> {
                         color: Colors.teal,
                         child: Padding(
                             padding: const EdgeInsets.all(UiConstants.defaultPadding * 0.5),
-                            child: controller.task.value.isDone?const Text("выполено"):Text(controller.task.value.state))),
+                            child: Text(
+                                ((){
+                                  if(controller.task.value.isDone){
+                                    return "done";
+                                  }else if(controller.task.value.isExpired){
+                                    return "expired";
+                                  }
+                                  return "on continue";
+                                })()
+
+                            ))),
                   ],
                 ),
                 Padding(

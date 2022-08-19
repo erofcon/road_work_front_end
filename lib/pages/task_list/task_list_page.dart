@@ -30,16 +30,25 @@ class TaskListPage extends GetView<TaskListController> {
                 DataColumn(label: Text('Куратор')),
               ],
               rows: controller.taskList.value.results.map((item) {
-                return DataRow(onSelectChanged: (_) {
-                  Get.toNamed(RoutesClass.task, arguments: item.id);
-                }, cells: [
-                  DataCell(Text(item.createDateTime)),
-                  DataCell(Text(item.state)),
-                  DataCell(Text(
-                      '${item.executor.firstName} ${item.executor.lastName}')),
-                  DataCell(Text(
-                      '${item.creator.firstName} ${item.creator.lastName}')),
-                ]);
+                return DataRow(
+                    onSelectChanged: (_) {
+                      Get.toNamed(RoutesClass.task, arguments: item.id);
+                    },
+                    cells: [
+                      DataCell(Text(item.createDateTime)),
+                      DataCell(Text((() {
+                        if (item.isDone) {
+                          return "выполнено";
+                        } else if (item.isExpired) {
+                          return "просрочено";
+                        }
+                        return "на исполнении";
+                      })())),
+                      DataCell(Text(
+                          '${item.executor.firstName} ${item.executor.lastName}')),
+                      DataCell(Text(
+                          '${item.creator.firstName} ${item.creator.lastName}')),
+                    ]);
               }).toList(),
             );
           }

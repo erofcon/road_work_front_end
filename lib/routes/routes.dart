@@ -3,10 +3,14 @@ import 'package:get/get.dart';
 import 'package:road_work_front_end/pages/create_task/create_task.dart';
 import 'package:road_work_front_end/pages/dashboard/bindings/dashboard_binding.dart';
 import 'package:road_work_front_end/pages/dashboard/dashboard_page.dart';
+import 'package:road_work_front_end/pages/detection_result/bindings/detection_result_binding.dart';
+import 'package:road_work_front_end/pages/detection_result/detection_result.dart';
+import 'package:road_work_front_end/pages/detection_result_list/detection_result_list.dart';
 import 'package:road_work_front_end/pages/login/login_page.dart';
 import 'package:road_work_front_end/pages/task_list/task_list_page.dart';
 
 import '../pages/create_task/bindings/create_task_bindings.dart';
+import '../pages/detection_result_list/bindings/detection_result_list_bindings.dart';
 import '../pages/login/controller/login_controller.dart';
 import '../pages/task/bindings/task_bindings.dart';
 import '../pages/task/task_page.dart';
@@ -18,6 +22,8 @@ class RoutesClass {
   static String create = '/create';
   static String taskList = '/list';
   static String task = '/task';
+  static String detectionResult = '/result';
+  static String detailDetectionResult = '/detailResult';
 
   static List<GetPage> routes = [
     GetPage(
@@ -33,7 +39,7 @@ class RoutesClass {
         name: create,
         page: () => const CreateTask(),
         binding: CreateTaskBinding(),
-        middlewares: [AuthGuard()]),
+        middlewares: [AuthGuard(), HasCreateAccess()]),
     GetPage(
         name: taskList,
         page: () => const TaskListPage(),
@@ -44,6 +50,12 @@ class RoutesClass {
         page: () => const TaskPage(),
         binding: TaskBinding(),
         middlewares: [AuthGuard()]),
+    GetPage(name: detectionResult, page: () => const DetectionResultListPage(),
+        binding: DetectionResultListBinding(),
+        middlewares: [AuthGuard(), HasWatchAccess()]),
+      GetPage(name: detailDetectionResult, page: () => const DetectionResultPage(),
+        binding: DetectionResultBinding(),
+        middlewares: [AuthGuard(), HasWatchAccess()]),
   ];
 }
 
@@ -53,6 +65,29 @@ class AuthGuard extends GetMiddleware {
   @override
   RouteSettings? redirect(String? route) {
     return authService.isLogin.value
+        ? null
+        : RouteSettings(name: RoutesClass.login);
+  }
+}
+
+class HasCreateAccess extends GetMiddleware {
+  final authService = Get.find<LoginController>();
+
+  @override
+  RouteSettings? redirect(String? route) {
+    return authService.user?.isCreator == true
+        ? null
+        : RouteSettings(name: RoutesClass.login);
+  }
+}
+
+class HasWatchAccess extends GetMiddleware {
+  final authService = Get.find<LoginController>();
+
+  @override
+  RouteSettings? redirect(String? route) {
+    return authService.user?.isCreator == true ||
+            authService.user?.isSuperUser == true
         ? null
         : RouteSettings(name: RoutesClass.login);
   }

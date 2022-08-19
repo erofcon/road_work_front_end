@@ -8,6 +8,8 @@ class ApiUrl {
   static const String uploadDetection = '$url/api/v1/detection/post/run';
   static const String getTaskList = '$url/api/v1/task/get';
   static const String createAnswer = '$url/api/v1/answer/post/create';
+  static const String closeTask = '$url/api/v1/task/put/update';
+  static const String detectionResultList = '$url/api/v1/detection/get';
 }
 
 class UiConstants {

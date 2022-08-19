@@ -5,7 +5,7 @@ import '../../../service/api_service.dart';
 
 class TaskListController extends GetxController {
   final isLoading = true.obs;
-  late  Rx<TaskList> taskList;
+  late Rx<TaskList> taskList;
 
   @override
   void onInit() {
