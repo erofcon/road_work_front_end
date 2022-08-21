@@ -9,10 +9,15 @@ import '../../dashboard/models/related_user_response.dart';
 import '../models/task_category_response.dart';
 
 class SingleTaskController extends GetxController {
-
   final isLoading = true.obs;
   DashboardController dashboardController = Get.put(DashboardController());
   late final List<TaskCategory>? taskCategories;
+
+  final activeStepIndex = 0.obs;
+  bool uploadTask = false;
+  final categoryError = false.obs;
+  final executorError = false.obs;
+  final expireDateError = false.obs;
 
   TaskCategory? selectedTaskCategory;
   RelatedUser? relatedUser;
@@ -20,7 +25,6 @@ class SingleTaskController extends GetxController {
   List<PlatformFile>? files;
   LatLng? location;
   DateTime? expiredDateTime;
-
 
   @override
   void onInit() {
@@ -69,13 +73,16 @@ class SingleTaskController extends GetxController {
   }
 
   Future<bool> createTask() async {
+    uploadTask = true;
+    update();
     bool result = await ApiService().createSingleTask(
         selectedTaskCategory!.id, relatedUser!.id, expiredDateTime!,
         description: description.text,
         latitude: location?.latitude.toString(),
         longitude: location?.longitude.toString(),
         files: files);
+    uploadTask = false;
+    update();
     return result;
   }
-
 }
