@@ -28,13 +28,14 @@ class Menu extends GetView<LoginController> {
               icon: Icons.create_outlined,
               press: () => Get.toNamed(RoutesClass.create)),
         DrawerList(
-            title: 'sidebar_map'.tr, icon: Icons.map_outlined, press: () {}),
-        if (controller.user?.isSuperUser == true ||
-            controller.user?.isCreator == true)
+            title: 'sidebar_map'.tr,
+            icon: Icons.map_outlined,
+            press: () => Get.toNamed(RoutesClass.map)),
+        if (controller.user?.isSuperUser == true)
           DrawerList(
               title: 'sidebar_report'.tr,
               icon: Icons.report_gmailerrorred_outlined,
-              press: () {}),
+              press: ()=>Get.toNamed(RoutesClass.report)),
         DrawerList(
             title: 'sidebar_log_out'.tr,
             icon: Icons.logout,

@@ -7,15 +7,14 @@ import '../../../service/api_service.dart';
 import '../../../service/web_service.dart';
 
 class RunDetectionController extends GetxController {
-  DateTime? runDateTime;
-  dynamic videoFile;
+  final runDateTime = Rx<DateTime?>(null);
+  final videoFile = Rx<dynamic>(null);
   final isUploadVideo = false.obs;
-  bool errorSelect = false;
+  final errorSelect = false.obs;
   final uploadProgress = 0.obs;
 
   void selectDateTime(dateTime) async {
-    runDateTime = dateTime;
-    update();
+    runDateTime(dateTime);
   }
 
   void ioSelectVideo() async {
@@ -23,40 +22,38 @@ class RunDetectionController extends GetxController {
       type: FileType.video,
     );
     if (result == null) return;
-    videoFile = result.files.first;
-    update();
+    videoFile(result.files.first.obs);
   }
 
   void webSelectFile() async {
     LargeFileUploader().pick(
         type: FileTypes.video,
         callback: (file) {
-          videoFile = file;
+          videoFile(file);
           update();
         });
   }
 
   void uploadVideo() async {
     uploadProgress(0);
-    if (runDateTime == null || videoFile == null) {
-      errorSelect = true;
-      update();
+    if (runDateTime.value == null || videoFile.value == null) {
+      errorSelect(true);
       return;
     } else {
-      errorSelect = false;
+      errorSelect(false);
       update();
       isUploadVideo(true);
       if (GetPlatform.isWeb) {
         WebService().uploadDetection(
-            runDateTime!,
-            videoFile,
+            runDateTime.value!,
+            videoFile.value,
             (p) => progress(p),
-            (responce) => uploadComplete(),
+            (response) => uploadComplete(),
             () => uploadError);
       } else {
         await ApiService().runDetection(
-            runDateTime!,
-            videoFile,
+            runDateTime.value!,
+            videoFile.value,
             (send, total) => progress(send, total: total),
             uploadComplete,
             uploadError);
@@ -73,17 +70,21 @@ class RunDetectionController extends GetxController {
   }
 
   void uploadComplete() {
-    Get.snackbar("Успех!",
-        "видео отправлено на детектирование. после окончания вы получите уведомление",
-        backgroundColor: Colors.green,
-        icon: const Icon(Icons.check_circle_outline));
+    Get.showSnackbar(const GetSnackBar(
+      title: "Успех",
+      message:
+          "видео отправлено на детектирование. после окончания вы получите уведомление",
+      backgroundColor: Colors.green,
+    ));
     isUploadVideo(false);
   }
 
   void uploadError() {
-    Get.snackbar(
-        "Ошибка!", "не удалось загрузить видео. повторите попытку позже",
-        backgroundColor: Colors.red, icon: const Icon(Icons.error));
+    Get.showSnackbar(const GetSnackBar(
+      title: "Ошибка!",
+      message: "не удалось загрузить видео. повторите попытку позже",
+      backgroundColor: Colors.red,
+    ));
     isUploadVideo(false);
   }
 }

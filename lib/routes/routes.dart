@@ -7,14 +7,18 @@ import 'package:road_work_front_end/pages/detection_result/bindings/detection_re
 import 'package:road_work_front_end/pages/detection_result/detection_result.dart';
 import 'package:road_work_front_end/pages/detection_result_list/detection_result_list.dart';
 import 'package:road_work_front_end/pages/login/login_page.dart';
+import 'package:road_work_front_end/pages/map/map_page.dart';
+import 'package:road_work_front_end/pages/report/report.dart';
 import 'package:road_work_front_end/pages/task_list/task_list_page.dart';
 
 import '../pages/create_task/bindings/create_task_bindings.dart';
 import '../pages/detection_result_list/bindings/detection_result_list_bindings.dart';
 import '../pages/login/controller/login_controller.dart';
+import '../pages/map/bindings/map_bindings.dart';
 import '../pages/task/bindings/task_bindings.dart';
 import '../pages/task/task_page.dart';
 import '../pages/task_list/bindings/task_list_bindings.dart';
+import '../pages/report/bindings/report_bindings.dart';
 
 class RoutesClass {
   static String home = '/';
@@ -24,6 +28,8 @@ class RoutesClass {
   static String task = '/task';
   static String detectionResult = '/result';
   static String detailDetectionResult = '/detailResult';
+  static String map = '/map';
+  static String report = '/report';
 
   static List<GetPage> routes = [
     GetPage(
@@ -50,12 +56,24 @@ class RoutesClass {
         page: () => const TaskPage(),
         binding: TaskBinding(),
         middlewares: [AuthGuard()]),
-    GetPage(name: detectionResult, page: () => const DetectionResultListPage(),
+    GetPage(
+        name: detectionResult,
+        page: () => const DetectionResultListPage(),
         binding: DetectionResultListBinding(),
         middlewares: [AuthGuard(), HasWatchAccess()]),
-      GetPage(name: detailDetectionResult, page: () => const DetectionResultPage(),
+    GetPage(
+        name: detailDetectionResult,
+        page: () => const DetectionResultPage(),
         binding: DetectionResultBinding(),
         middlewares: [AuthGuard(), HasWatchAccess()]),
+    GetPage(
+        name: map,
+        page: () => const MapPage(),
+        binding: MapPageBinding(),
+        middlewares: [AuthGuard()]),
+    GetPage(name: report, page: () => const ReportPage(),
+        binding: ReportPageBinding(),
+        middlewares: [AuthGuard(), UserIsAdmin()]),
   ];
 }
 
@@ -88,6 +106,17 @@ class HasWatchAccess extends GetMiddleware {
   RouteSettings? redirect(String? route) {
     return authService.user?.isCreator == true ||
             authService.user?.isSuperUser == true
+        ? null
+        : RouteSettings(name: RoutesClass.login);
+  }
+}
+
+class UserIsAdmin extends GetMiddleware {
+  final authService = Get.find<LoginController>();
+
+  @override
+  RouteSettings? redirect(String? route) {
+    return authService.user?.isSuperUser == true
         ? null
         : RouteSettings(name: RoutesClass.login);
   }

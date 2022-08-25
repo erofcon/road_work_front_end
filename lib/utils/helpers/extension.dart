@@ -5,6 +5,10 @@ extension DateTimeExtension on DateTime {
     return DateFormat('d MMMM y').format(this);
   }
 
+  String formatMMMMY() {
+    return DateFormat('MMMM').format(this);
+  }
+
   String dueDate() {
     DateTime due = this;
     Duration diff = due.difference(DateTime.now());

@@ -16,13 +16,8 @@ class TaskLocation extends GetView<TaskController> {
       height: 350,
       child: FlutterMap(
         options: MapOptions(
-          // enableScrollWheel: false,
           center: LatLng(controller.task.value.latitude!, controller.task.value.longitude!),
           zoom: 9.0,
-          // plugins: [
-          //   ZoomButtonsPlugin(),
-          // ],
-          // onTap: _handleTap,
         ),
         layers: [
           TileLayerOptions(
@@ -37,14 +32,6 @@ class TaskLocation extends GetView<TaskController> {
           ]),
           // MarkerLayerOptions(markers: markers)
         ],
-        // nonRotatedLayers: [
-        //   ZoomButtonsPluginOption(
-        //       minZoom: 4,
-        //       maxZoom: 15,
-        //       mini: true,
-        //       padding: defaultPadding,
-        //       alignment: Alignment.bottomRight)
-        // ],
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:road_work_front_end/pages/create_task/controller/create_task_controller.dart';
 
+import '../controller/run_detection_controller.dart';
 import '../controller/single_task_controller.dart';
 
 class CreateTaskBinding extends Bindings {
@@ -8,5 +9,6 @@ class CreateTaskBinding extends Bindings {
   void dependencies() {
     Get.lazyPut(() => CreateTaskController());
     Get.lazyPut(() => SingleTaskController());
+    Get.lazyPut(() => RunDetectionController());
   }
 }

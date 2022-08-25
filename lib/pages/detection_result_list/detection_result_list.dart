@@ -5,6 +5,7 @@ import 'package:road_work_front_end/utils/helpers/extension.dart';
 
 import '../../routes/routes.dart';
 import '../../utils/constants.dart';
+import 'components/delete_alert.dart';
 
 class DetectionResultListPage extends GetView<DetectionResultListController> {
   const DetectionResultListPage({Key? key}) : super(key: key);
@@ -77,6 +78,6 @@ class DetectionResult extends GetView<DetectionResultListController> {
   }
 
   Widget _deleteButton() {
-    return ElevatedButton(onPressed: () {}, child: const Text("Удалить"));
+    return ElevatedButton(onPressed: () => Get.dialog(DeleteAlert(index: controller.detectionList.value![index].id,)), child: const Text("Удалить"));
   }
 }

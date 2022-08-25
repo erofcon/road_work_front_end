@@ -11,8 +11,8 @@ class TaskList {
   });
 
   late final int count;
-  late final Null next;
-  late final Null previous;
+  late final dynamic next;
+  late final dynamic previous;
   late final List<Results> results;
 
   TaskList.fromJson(Map<String, dynamic> json) {
@@ -45,12 +45,12 @@ class Results {
   });
 
   late final int id;
-  late final Category category;
-  late final Executor executor;
-  late final Creator creator;
-  late final String createDateTime;
-  late bool isDone;
-  late final bool isExpired;
+  late final Category? category;
+  late final Executor? executor;
+  late final Creator? creator;
+  late final String? createDateTime;
+  late bool? isDone;
+  late final bool? isExpired;
 
   Results.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -65,9 +65,9 @@ class Results {
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['id'] = id;
-    data['category'] = category.toJson();
-    data['executor'] = executor.toJson();
-    data['creator'] = creator.toJson();
+    data['category'] = category?.toJson();
+    data['executor'] = executor?.toJson();
+    data['creator'] = creator?.toJson();
     data['createDateTime'] = createDateTime;
     return data;
   }

@@ -34,56 +34,47 @@ class DetectionResultPage extends GetView<DetectionResultController> {
                             mainAxisSpacing: 10),
                     itemCount: controller.detectionResult.value!.images.length,
                     itemBuilder: (BuildContext context, int index) {
-                      final url =
-                          controller.detectionResult.value!.images[index].url;
-                      return Obx(
-                        () => Container(
+                      final url = controller.detectionResult.value!.images[index].url;
+                      return Obx(() {
+                        return Container(
                           decoration: BoxDecoration(
                               border: controller.selectedIndex.contains(
-                                      controller.detectionResult.value!
-                                          .images[index].id)
+                                      controller.detectionResult.value!.images[index])
                                   ? Border.all(
                                       color: Colors.lightBlue, width: 5)
                                   : null),
-                          child: ClipRRect(
                             child: InkWell(
                               onTap: () {
                                 if (controller.selectedIndex.isEmpty) {
-                                  controller.isLongPress = false;
+                                  controller.isLongPress(false);
                                 }
-                                if (controller.isLongPress) {
+                                if (controller.isLongPress.isTrue) {
                                   if (controller.selectedIndex.contains(
-                                      controller.detectionResult.value!
-                                          .images[index].id)) {
+                                      controller
+                                          .detectionResult.value!.images[index])) {
                                     controller.deleteSelectIndex(controller
-                                        .detectionResult
-                                        .value!
-                                        .images[index]
-                                        .id);
+                                        .detectionResult.value!.images[index]);
                                   } else {
                                     controller.insertSelectIndex(controller
-                                        .detectionResult
-                                        .value!
-                                        .images[index]
-                                        .id);
+                                        .detectionResult.value!.images[index]);
                                   }
                                 } else {
+                                  controller.currentIndex = index;
                                   controller.selectedIndex.clear();
-                                  Get.to(() => DetectionResultImageCarousel(
-                                      currentIndex: index,
-                                      images: controller
-                                          .detectionResult.value!.images));
+                                  controller.insertSelectIndex(controller
+                                      .detectionResult.value!.images[index]);
+                                  Get.dialog(const DetectionResultImageCarousel());
                                 }
                               },
                               onLongPress: () {
-                                controller.isLongPress = true;
+                                controller.isLongPress(true);
                                 if (controller.selectedIndex.contains(controller
-                                    .detectionResult.value!.images[index].id)) {
+                                    .detectionResult.value!.images[index])) {
                                   controller.deleteSelectIndex(controller
-                                      .detectionResult.value!.images[index].id);
+                                      .detectionResult.value!.images[index]);
                                 } else {
                                   controller.insertSelectIndex(controller
-                                      .detectionResult.value!.images[index].id);
+                                      .detectionResult.value!.images[index]);
                                 }
                               },
                               child: ExtendedImage.network(
@@ -91,9 +82,8 @@ class DetectionResultPage extends GetView<DetectionResultController> {
                                 fit: BoxFit.cover,
                               ),
                             ),
-                          ),
-                        ),
-                      );
+                        );
+                      });
                     }),
               ),
             ),

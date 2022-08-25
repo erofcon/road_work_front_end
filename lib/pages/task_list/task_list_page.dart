@@ -35,19 +35,19 @@ class TaskListPage extends GetView<TaskListController> {
                       Get.toNamed(RoutesClass.task, arguments: item.id);
                     },
                     cells: [
-                      DataCell(Text(item.createDateTime)),
+                      DataCell(Text(item.createDateTime??'')),
                       DataCell(Text((() {
-                        if (item.isDone) {
+                        if (item.isDone??false) {
                           return "выполнено";
-                        } else if (item.isExpired) {
+                        } else if (item.isExpired??false) {
                           return "просрочено";
                         }
                         return "на исполнении";
                       })())),
                       DataCell(Text(
-                          '${item.executor.firstName} ${item.executor.lastName}')),
+                          '${item.executor?.firstName??''} ${item.executor?.lastName??''}')),
                       DataCell(Text(
-                          '${item.creator.firstName} ${item.creator.lastName}')),
+                          '${item.creator?.firstName??''} ${item.creator?.lastName??''}')),
                     ]);
               }).toList(),
             );
