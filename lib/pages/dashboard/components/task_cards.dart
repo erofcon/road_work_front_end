@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:road_work_front_end/pages/dashboard/controller/dashboard_controller.dart';
 import 'package:road_work_front_end/utils/constants.dart';
 
+import '../../../routes/routes.dart';
 import '../../../shared_components/task_card_list.dart';
 
 class TaskCards extends GetView<DashboardController> {
@@ -20,9 +21,11 @@ class TaskCards extends GetView<DashboardController> {
           physics: const BouncingScrollPhysics(),
           itemCount: controller.taskData.length,
           itemBuilder: (context, index) => Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: UiConstants.defaultPadding),
-            child: CardTask(taskData: controller.taskData[index],),
+            padding: const EdgeInsets.symmetric(
+                horizontal: UiConstants.defaultPadding),
+            child: CardTask(
+              taskData: controller.taskData[index],
+            ),
           ),
         ),
       ),
@@ -35,7 +38,6 @@ class CardTask extends StatelessWidget {
     required this.taskData,
     Key? key,
   }) : super(key: key);
-
 
   final TaskCardInfo taskData;
 
@@ -114,7 +116,8 @@ class CardTask extends StatelessWidget {
 
   Widget _doneButton() {
     return ElevatedButton.icon(
-      onPressed: () {},
+      onPressed: () =>
+          Get.toNamed(RoutesClass.taskList, arguments: taskData.routArguments),
       style: ElevatedButton.styleFrom(
         primary: taskData.primary,
         onPrimary: taskData.textColor,

@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:road_work_front_end/pages/dashboard/controller/dashboard_controller.dart';
+import 'package:road_work_front_end/shared_components/theme_service.dart';
+import 'package:road_work_front_end/theme/colors.dart';
 import 'package:road_work_front_end/utils/constants.dart';
-import 'package:road_work_front_end/utils/helpers/extension.dart';
 
+import '../../routes/routes.dart';
 import '../../utils/responsive.dart';
 import 'components/head_recent_tasks.dart';
 import 'components/menu.dart';
+import 'components/notification.dart';
 import 'components/recent_task_list.dart';
 import 'components/related_user.dart';
 import 'components/task_cards.dart';
@@ -22,9 +26,9 @@ class HomePage extends GetView<DashboardController> {
       key: controller.scaffoldKey,
       drawer: ResponsiveBuilder.isDesktop(context)
           ? null
-          : Drawer(
+          : const Drawer(
               child: SafeArea(
-                child: SingleChildScrollView(child: _buildSidebar()),
+                child: SingleChildScrollView(child: _BuildSidebar()),
               ),
             ),
       body: SafeArea(
@@ -40,10 +44,11 @@ class HomePage extends GetView<DashboardController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildTaskContent(
+                      BuildTaskContent(
                         onPressedMenu: () => controller.openDrawer(),
                       ),
-                      _buildChartContent(),
+                      const Divider(),
+                      const _BuildChartContent(),
                     ],
                   ),
                 );
@@ -64,7 +69,7 @@ class HomePage extends GetView<DashboardController> {
                       flex: constraints.maxWidth > 800 ? 8 : 7,
                       child: SingleChildScrollView(
                           controller: ScrollController(),
-                          child: _buildTaskContent(
+                          child: BuildTaskContent(
                               onPressedMenu: () => controller.openDrawer())),
                     ),
                     SizedBox(
@@ -75,7 +80,7 @@ class HomePage extends GetView<DashboardController> {
                       flex: 4,
                       child: SingleChildScrollView(
                         controller: ScrollController(),
-                        child: _buildChartContent(),
+                        child: const _BuildChartContent(),
                       ),
                     ),
                   ],
@@ -95,15 +100,14 @@ class HomePage extends GetView<DashboardController> {
                   children: <Widget>[
                     Flexible(
                         flex: constraints.maxWidth > 1350 ? 3 : 4,
-                        child: SingleChildScrollView(
-                          // child: BuildSidebar(),
-                          child: _buildSidebar(),
+                        child: const SingleChildScrollView(
+                          child: _BuildSidebar(),
                         )),
                     Flexible(
                       flex: constraints.maxWidth > 1350 ? 10 : 9,
                       child: SingleChildScrollView(
                         controller: ScrollController(),
-                        child: _buildTaskContent(),
+                        child: const BuildTaskContent(),
                       ),
                     ),
                     SizedBox(
@@ -114,7 +118,7 @@ class HomePage extends GetView<DashboardController> {
                       flex: 4,
                       child: SingleChildScrollView(
                         controller: ScrollController(),
-                        child: _buildChartContent(),
+                        child: const _BuildChartContent(),
                       ),
                     ),
                   ],
@@ -126,37 +130,15 @@ class HomePage extends GetView<DashboardController> {
       ),
     );
   }
+}
 
-  Widget _buildSidebar() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.symmetric(
-              horizontal: UiConstants.defaultPadding),
-          child: UserProfile(
-            onPressed: () {},
-            imageUrl: 'https://avatarfiles.alphacoders.com/162/162739.jpg',
-          ),
-        ),
-        const SizedBox(height: UiConstants.defaultPadding),
-        const Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: UiConstants.defaultPadding * 2),
-          child: Menu(),
-        ),
-        const Divider(
-          indent: 40,
-          thickness: 1,
-          endIndent: 20,
-          height: 60,
-        ),
-        const RelatedUsers(),
-      ],
-    );
-  }
+class BuildTaskContent extends GetView<DashboardController> {
+  const BuildTaskContent({Key? key, this.onPressedMenu}) : super(key: key);
 
-  Widget _buildTaskContent({Function()? onPressedMenu}) {
+  final Function()? onPressedMenu;
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding:
           const EdgeInsets.symmetric(horizontal: UiConstants.defaultPadding),
@@ -168,10 +150,60 @@ class HomePage extends GetView<DashboardController> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               if (onPressedMenu != null)
-                IconButton(onPressed: () =>controller.openDrawer(), icon: const Icon(Icons.menu)),
+                IconButton(
+                    onPressed: () => controller.openDrawer(),
+                    icon: Icon(
+                      Icons.menu,
+                      color: CustomColors.iconColor,
+                    )),
               const Spacer(),
-              IconButton(onPressed: () {}, icon: const Icon(Icons.notifications_none_rounded)),
+              Obx(
+                () => IconButton(
+                    splashRadius: 20,
+                    onPressed: () {
+                      ThemeService().changeThemeMode();
+                      controller.isDarkMode.toggle();
+                    },
+                    icon: controller.isDarkMode.isTrue
+                        ? Icon(
+                            Icons.sunny,
+                            color: CustomColors.iconColor,
+                          )
+                        : Icon(Icons.dark_mode_outlined,
+                            color: CustomColors.iconColor)),
+              ),
+              Obx(
+                () => Stack(
+                  children: <Widget>[
+                    if (controller.notificationsData.isNotEmpty)
+                      Positioned(
+                        right: 1,
+                        child: Container(
+                          width: 14,
+                          height: 14,
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Center(
+                              child: Text(
+                            controller.notificationsData.length.toString(),
+                            style: const TextStyle(
+                                fontSize: 10, color: Colors.white),
+                          )),
+                        ),
+                      ),
+                    IconButton(
+                        splashRadius: 20,
+                        onPressed: () => Get.dialog(const NotificationDialog()),
+                        icon: Icon(
+                          Icons.notifications_none_rounded,
+                          color: CustomColors.iconColor,
+                        )),
+                  ],
+                ),
+              ),
               IconButton(
+                  splashRadius: 20,
                   onPressed: () {},
                   icon: const CircleAvatar(
                     backgroundColor: Colors.white,
@@ -179,8 +211,12 @@ class HomePage extends GetView<DashboardController> {
                   )),
             ],
           ),
+          const Divider(),
+          const SizedBox(
+            height: UiConstants.defaultPadding,
+          ),
           Text(
-            DateTime.now().formatdMMMMY(),
+            DateFormat('yMMMMd', 'ru').format(DateTime.now()),
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w800,
@@ -188,6 +224,10 @@ class HomePage extends GetView<DashboardController> {
           ),
           const SizedBox(height: UiConstants.defaultPadding),
           const TaskCards(),
+          const SizedBox(
+            height: UiConstants.defaultPadding,
+          ),
+          if (ResponsiveBuilder.isMobile(context)) const Divider(),
           const SizedBox(
             height: UiConstants.defaultPadding,
           ),
@@ -200,8 +240,13 @@ class HomePage extends GetView<DashboardController> {
       ),
     );
   }
+}
 
-  Widget _buildChartContent() {
+class _BuildChartContent extends GetView<DashboardController> {
+  const _BuildChartContent({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(UiConstants.defaultPadding),
       child: Column(
@@ -220,20 +265,51 @@ class HomePage extends GetView<DashboardController> {
                   ),
                 ),
               ),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.add_chart,
-                  color: Colors.blue,
-                  size: 25,
-                ),
-                tooltip: "отчет",
-              )
+              if (controller.loginController.user?.isSuperUser ?? false)
+                IconButton(
+                  splashRadius: 20,
+                  onPressed: () => Get.toNamed(RoutesClass.report),
+                  icon: Icon(
+                    Icons.add_chart,
+                    color: Theme.of(context).primaryColor,
+                    size: 25,
+                  ),
+                  tooltip: "отчет",
+                )
             ],
           ),
           const TasksStatistic(),
         ],
       ),
+    );
+  }
+}
+
+class _BuildSidebar extends StatelessWidget {
+  const _BuildSidebar({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        UserProfile(
+          onPressed: () {},
+        ),
+        const SizedBox(height: UiConstants.defaultPadding),
+        const Padding(
+          padding:
+              EdgeInsets.symmetric(horizontal: UiConstants.defaultPadding * 2),
+          child: Menu(),
+        ),
+        const Divider(
+          indent: 40,
+          thickness: 1,
+          endIndent: 20,
+          height: 60,
+        ),
+        const RelatedUsers(),
+      ],
     );
   }
 }

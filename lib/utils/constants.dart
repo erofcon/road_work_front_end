@@ -19,8 +19,30 @@ class ApiUrl {
   static const String getTaskToMap = '$url/api/v1/map/get/tasktomap';
   static const String getReportCountTask = '$url/api/v1/report/get/counttask';
   static const String createReport = '$url/api/v1/report/get/createreport';
+  static const String deleteTaskNotification =
+      '$url/api/v1/notification/task/delete';
+  static const String deleteDetectionNotification =
+      '$url/api/v1/notification/detection/delete';
 }
 
 class UiConstants {
   static const double defaultPadding = 16;
+}
+
+class NotificationTypes {
+  static String answerType = "answer";
+  static String newTaskType = "new task";
+  static String closeTaskType = "close task";
+  static String detectionFinished = "detection finished";
+}
+
+class NotificationActions {
+  static String getTaskNotificationList = "get_task_notification_list";
+  static String getDetectionNotificationList =
+      "get_detection_notification_list";
+  static String subscribeTaskNotificationActivity =
+      "subscribe_task_notification_activity";
+  static String subscribeDetectionNotificationActivity =
+      "subscribe_detection_notification_activity";
+  static String delete = "delete";
 }

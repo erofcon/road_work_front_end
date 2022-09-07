@@ -3,6 +3,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../utils/helpers/map_helpers.dart';
+
 class Location extends StatefulWidget {
   const Location({Key? key, required this.location}) : super(key: key);
   final Function(LatLng latLng) location;
@@ -45,7 +47,7 @@ class _LocationState extends State<Location> {
           ),
           layers: [
             TileLayerOptions(
-              urlTemplate: 'https://a.tile.openstreetmap.de/{z}/{x}/{y}.png',
+              urlTemplate: MapHelpers.lightMapTile
             ),
             MarkerLayerOptions(markers: markers)
           ],

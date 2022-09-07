@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:road_work_front_end/service/api_service.dart';
 
+import '../../../service/web_service.dart';
 import '../models/report_get_count_task_response.dart';
 
 class ReportController extends GetxController {
@@ -49,6 +50,12 @@ class ReportController extends GetxController {
   }
 
   void createReport() async{
+    // if(GetPlatform.isWeb){
+    //   await WebService().createReport(startTime.value, endDateTime.value);
+    // }else{
+    //   await ApiService().createReport(startTime.value, endDateTime.value);
+    // }
+
     await ApiService().createReport(startTime.value, endDateTime.value);
   }
 }

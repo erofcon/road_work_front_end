@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:road_work_front_end/pages/login/controller/login_controller.dart';
 import 'package:road_work_front_end/service/api_service.dart';
 
+import '../../../theme/colors.dart';
 import '../../task_list/controller/task_list_controller.dart';
 import '../models/task_response.dart';
 
@@ -57,6 +58,7 @@ class TaskController extends GetxController {
     if (isClosingTask.isFalse) {
       isClosingTask(true);
       bool result = await ApiService().closeTask(task.value.id.toString());
+
       if (result) {
         task.update((val) => val?.isDone = true);
         final cont = Get.put(TaskListController());
@@ -69,9 +71,21 @@ class TaskController extends GetxController {
           }
         });
         Get.back();
-        Get.snackbar("Успех!", "задача закрыто",
-            backgroundColor: Colors.green,
-            icon: const Icon(Icons.check_circle_outline));
+        Get.snackbar("Успех",
+            "Задача закрыто",
+            margin: EdgeInsets.zero,
+            duration: const Duration(seconds: 2),
+            borderRadius: 0,
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: CustomColors.completedTaskColor);
+      }else{
+        Get.snackbar("Ошибка",
+            "Ошибка закрытия задачи",
+            margin: EdgeInsets.zero,
+            duration: const Duration(seconds: 2),
+            borderRadius: 0,
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: CustomColors.expiredTaskColor);
       }
       isClosingTask(false);
     }

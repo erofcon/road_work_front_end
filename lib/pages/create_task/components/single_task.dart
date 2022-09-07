@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:road_work_front_end/pages/create_task/components/select_on_map.dart';
 import 'package:road_work_front_end/pages/create_task/controller/single_task_controller.dart';
+import 'package:road_work_front_end/theme/colors.dart';
 
 import '../../../utils/constants.dart';
-import '../../../utils/helpers/date_time.dart';
+import '../../../utils/helpers/date_time_select.dart';
 import '../../dashboard/models/related_user_response.dart';
 import '../models/task_category_response.dart';
+import 'select_on_map.dart';
 
 class SingleTask extends GetView<SingleTaskController> {
   SingleTask({Key? key}) : super(key: key);
@@ -30,121 +31,127 @@ class SingleTask extends GetView<SingleTaskController> {
         );
       } else {
         return SingleChildScrollView(
-          child: Stepper(
-            currentStep: controller.activeStepIndex.value,
-            steps: <Step>[
-              Step(
-                  state: controller.categoryError.isTrue
-                      ? StepState.error
-                      : StepState.indexed,
-                  isActive:
-                      controller.activeStepIndex.value == 0 ? true : false,
-                  title: const Text("Категория и описание задачи"),
-                  content: Align(
-                    alignment: Alignment.topLeft,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        const Category(),
-                        controller.categoryError.value
-                            ? const Text(
-                                "пожалуйста, выберите категорию",
-                                style: TextStyle(color: Colors.red),
-                              )
-                            : const Text(''),
-                        const Description()
-                      ],
-                    ),
-                  )),
-              Step(
-                  isActive:
-                      controller.activeStepIndex.value == 1 ? true : false,
-                  title: const Text("Изображение и локация"),
-                  content: Align(
-                    alignment: Alignment.topLeft,
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                            constraints: const BoxConstraints(maxWidth: 500),
-                            child: const SelectImages()),
-                        const SizedBox(
-                          height: 25,
-                        ),
-                        Container(
-                            constraints: const BoxConstraints(maxWidth: 500),
-                            child: const SelectLocation()),
-                      ],
-                    ),
-                  )),
-              Step(
-                state: controller.executorError.isTrue ||
-                        controller.expireDateError.isTrue
-                    ? StepState.error
-                    : StepState.indexed,
-                isActive: controller.activeStepIndex.value == 2 ? true : false,
-                title: const Text("Исполнитель и срок выполнения"),
-                content: Align(
-                  alignment: Alignment.topLeft,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      const RelUser(),
-                      controller.executorError.isTrue
-                          ? const Text("пожалуйста, выберите исполнителя",
-                              style: TextStyle(color: Colors.red))
-                          : const Text(''),
-                      Container(
-                          constraints: const BoxConstraints(maxWidth: 500),
-                          child: const ExpireDate()),
-                      controller.expireDateError.isTrue
-                          ? const Text("пожалуйста, выберите исполнителя",
-                              style: TextStyle(color: Colors.red))
-                          : const Text(''),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-            onStepContinue: onStepContinue,
-            onStepCancel: onStepCancel,
-            onStepTapped: (int index) => onStepContinue(next: index),
-            controlsBuilder: (context, details) {
-              final isLastStep = controller.activeStepIndex.value == 2;
-              return Align(
-                alignment: Alignment.topLeft,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: UiConstants.defaultPadding),
-                  constraints: const BoxConstraints(maxWidth: 500),
-                  child: controller.uploadTask
-                      ? const Center(
-                          child: CircularProgressIndicator(
-                          strokeWidth: 5.0,
-                        ))
-                      : Row(
+          child: Center(
+            child: Container(
+              padding:
+                  const EdgeInsets.only(top: UiConstants.defaultPadding * 2),
+              constraints: const BoxConstraints(maxWidth: 500),
+              child: Stepper(
+                currentStep: controller.activeStepIndex.value,
+                steps: <Step>[
+                  Step(
+                      state: controller.categoryError.isTrue
+                          ? StepState.error
+                          : StepState.indexed,
+                      isActive:
+                          controller.activeStepIndex.value == 0 ? true : false,
+                      title: const Text("Категория и описание задачи"),
+                      content: Align(
+                        alignment: Alignment.topLeft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: onStepContinue,
-                                child: isLastStep
-                                    ? const Text('Отправить')
-                                    : const Text('Вперед'),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: UiConstants.defaultPadding,
-                            ),
-                            if (controller.activeStepIndex.value > 0)
-                              Expanded(
-                                child: ElevatedButton(
-                                    onPressed: onStepCancel,
-                                    child: const Text('Назад')),
-                              ),
+                            const Category(),
+                            controller.categoryError.value
+                                ? const Text(
+                                    "пожалуйста, выберите категорию",
+                                    style: TextStyle(color: Colors.red),
+                                  )
+                                : const Text(''),
+                            const Description()
                           ],
                         ),
-                ),
-              );
-            },
+                      )),
+                  Step(
+                      isActive:
+                          controller.activeStepIndex.value == 1 ? true : false,
+                      title: const Text("Изображение и локация"),
+                      content: Align(
+                        alignment: Alignment.topLeft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const <Widget>[
+                            SelectImages(),
+                            SizedBox(
+                              height: 25,
+                            ),
+                            SelectLocation(),
+                          ],
+                        ),
+                      )),
+                  Step(
+                    state: controller.executorError.isTrue ||
+                            controller.expireDateError.isTrue
+                        ? StepState.error
+                        : StepState.indexed,
+                    isActive:
+                        controller.activeStepIndex.value == 2 ? true : false,
+                    title: const Text("Исполнитель и срок выполнения"),
+                    content: Align(
+                      alignment: Alignment.topLeft,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          const RelUser(),
+                          controller.executorError.isTrue
+                              ? const Text("пожалуйста, выберите исполнителя",
+                                  style: TextStyle(color: Colors.red))
+                              : const Text(''),
+                          const SizedBox(
+                            height: UiConstants.defaultPadding,
+                          ),
+                          const ExpireDate(),
+                          controller.expireDateError.isTrue
+                              ? const Text("пожалуйста, выберите исполнителя",
+                                  style: TextStyle(color: Colors.red))
+                              : const Text(''),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+                onStepContinue: onStepContinue,
+                onStepCancel: onStepCancel,
+                onStepTapped: (int index) => onStepContinue(next: index),
+                controlsBuilder: (context, details) {
+                  final isLastStep = controller.activeStepIndex.value == 2;
+                  return Align(
+                    alignment: Alignment.topLeft,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: UiConstants.defaultPadding),
+                      constraints: const BoxConstraints(maxWidth: 500),
+                      child: controller.uploadTask
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                              strokeWidth: 5.0,
+                            ))
+                          : Row(
+                              children: <Widget>[
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: onStepContinue,
+                                    child: isLastStep
+                                        ? const Text('Отправить')
+                                        : const Text('Вперед'),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: UiConstants.defaultPadding,
+                                ),
+                                if (controller.activeStepIndex.value > 0)
+                                  Expanded(
+                                    child: ElevatedButton(
+                                        onPressed: onStepCancel,
+                                        child: const Text('Назад')),
+                                  ),
+                              ],
+                            ),
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
         );
       }
@@ -198,22 +205,25 @@ class SingleTask extends GetView<SingleTaskController> {
         bool result = await controller.createTask();
 
         result
-            ? Get.showSnackbar(const GetSnackBar(
-                title: "Успех",
-                message: "задача успешно создано!",
-                backgroundColor: Colors.green,
-              ))
-            : Get.showSnackbar(const GetSnackBar(
-                title: "Ошибка",
-                message: "ошибка созданеия задачи",
-                backgroundColor: Colors.red,
-              ));
+            ? Get.snackbar("Успех", "задача успешно создано",
+                margin: EdgeInsets.zero,
+                duration: const Duration(seconds: 2),
+                borderRadius: 0,
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: CustomColors.completedTaskColor)
+            : Get.snackbar("Ошибка", "ошибка созданеия задачи",
+                margin: EdgeInsets.zero,
+                duration: const Duration(seconds: 2),
+                borderRadius: 0,
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: CustomColors.expiredTaskColor);
       } else {
-        Get.showSnackbar(const GetSnackBar(
-          title: "Ошибка",
-          message: "обязательные поля не заполнены!",
-          backgroundColor: Colors.red,
-        ));
+        Get.snackbar("Ошибка", "Обязательные поля не заполнены",
+            margin: EdgeInsets.zero,
+            duration: const Duration(seconds: 2),
+            borderRadius: 0,
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: CustomColors.expiredTaskColor);
       }
     }
   }
@@ -287,35 +297,18 @@ class SelectImages extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<SingleTaskController>(builder: (controller) {
-      return ElevatedButton(
-          onPressed: controller.selectFile,
-          style: ElevatedButton.styleFrom(
-            elevation: 0.0,
-            primary: Colors.white,
-            side: const BorderSide(width: 1, color: Colors.black12),
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(UiConstants.defaultPadding * 2),
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              children: <Widget>[
-                const Icon(
-                  Icons.image_outlined,
-                  color: Colors.black,
-                  size: 48,
-                ),
-                const SizedBox(
-                  height: UiConstants.defaultPadding,
-                ),
-                Text(
-                  controller.files != null
-                      ? controller.files!.first.name.toString()
-                      : 'Выберите изображение',
-                  style: const TextStyle(color: Colors.black),
-                ),
-              ],
-            ),
-          ));
+      return SizedBox(
+          width: context.width,
+          child: ElevatedButton.icon(
+              onPressed: controller.selectFile,
+              icon: controller.files == null
+                  ? const Icon(Icons.image_outlined)
+                  : const Icon(Icons.check_circle_outline),
+              label: controller.files == null
+                  ? const Text("Выберите изображение", maxLines: 1)
+                  : const Text(
+                      "Изображение выбрано",
+                    )));
     });
   }
 }
@@ -325,41 +318,27 @@ class SelectLocation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SingleTaskController>(builder: (controller) {
-      return ElevatedButton(
-          onPressed: () {
-            Get.to(() => Location(
+    return GetBuilder<SingleTaskController>(
+      builder: (controller) => SizedBox(
+        width: context.width,
+        child: ElevatedButton.icon(
+            onPressed: () => Get.dialog(Location(
                   location: controller.selectLocation,
-                ));
-          },
-          style: ElevatedButton.styleFrom(
-            elevation: 0.0,
-            primary: Colors.white,
-            side: const BorderSide(width: 1, color: Colors.black12),
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(UiConstants.defaultPadding * 2),
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              children: <Widget>[
-                const Icon(
-                  Icons.location_on_outlined,
-                  color: Colors.black,
-                  size: 48,
-                ),
-                const SizedBox(
-                  height: UiConstants.defaultPadding,
-                ),
-                Text(
-                  controller.location != null
-                      ? '${controller.location!.latitude}  ${controller.location!.longitude}'
-                      : 'Select Location',
-                  style: const TextStyle(color: Colors.black),
-                ),
-              ],
-            ),
-          ));
-    });
+                )),
+            icon: controller.location == null
+                ? const Icon(Icons.location_on_outlined)
+                : const Icon(Icons.check_circle_outline),
+            label: controller.location == null
+                ? const Text(
+                    "Выберите местоположение",
+                    maxLines: 1,
+                  )
+                : const Text(
+                    "местоположение выбрано",
+                    maxLines: 1,
+                  )),
+      ),
+    );
   }
 }
 
@@ -393,40 +372,23 @@ class ExpireDate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<SingleTaskController>(
-      builder: (controller) => ElevatedButton(
+      builder: (controller) => SizedBox(
+        width: context.width,
+        child: ElevatedButton.icon(
           onPressed: () async {
             final selected = await selectDate(context);
             if (selected != null) {
               controller.selectDate(selected);
             }
           },
-          style: ElevatedButton.styleFrom(
-            elevation: 0.0,
-            primary: Colors.white,
-            side: const BorderSide(width: 1, color: Colors.black12),
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(UiConstants.defaultPadding * 2),
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              children: <Widget>[
-                const Icon(
-                  Icons.date_range_outlined,
-                  color: Colors.black,
-                  size: 48,
-                ),
-                const SizedBox(
-                  height: UiConstants.defaultPadding,
-                ),
-                Text(
-                  controller.expiredDateTime != null
-                      ? controller.expiredDateTime.toString()
-                      : "Выбрать дату",
-                  style: const TextStyle(color: Colors.black),
-                ),
-              ],
-            ),
-          )),
+          icon: controller.expiredDateTime == null
+              ? const Icon(Icons.access_time)
+              : const Icon(Icons.check_circle_outline),
+          label: controller.expiredDateTime == null
+              ? const Text("Установите срок выполнения")
+              : const Text("Срок выполения выбрано"),
+        ),
+      ),
     );
   }
 }

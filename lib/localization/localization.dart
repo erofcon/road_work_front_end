@@ -32,6 +32,11 @@ class Localization extends Translations {
           "select_video": "Upload video",
           "video_description": "supported files mp4, mpeg",
           "upload": "Upload",
+
+          "close_task_question":"Do you really want to close the task?",
+          "delete_detection_question":"Are you sure you want to delete the control exit?",
+          "ok":"yes",
+          "cancel":"cancel",
         },
         //Russian language
         'ru_RU': {
@@ -61,6 +66,11 @@ class Localization extends Translations {
           "select_video": "Выберите видео файл",
           "video_description": "поддерживаемы файлы mp4, mpeg",
           "upload": "Отправить",
+
+          "close_task_question":"Вы действительно хотите закрыть задачу?",
+          "delete_detection_question":"Вы действительно хотите удалить контрольный выезд?",
+          "ok":"да",
+          "cancel":"отмена",
         }
       };
 }

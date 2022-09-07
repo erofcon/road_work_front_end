@@ -1,9 +1,11 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:road_work_front_end/utils/constants.dart';
-import 'package:road_work_front_end/utils/helpers/extension.dart';
 
+import '../../../routes/routes.dart';
+import '../../../theme/colors.dart';
 import '../controller/map_controller.dart';
 
 class MapAlert extends GetView<MapPageController> {
@@ -111,7 +113,7 @@ class _TaskCard extends GetView<MapPageController> {
                     ),
                     _taskState(),
                     const SizedBox(
-                      height: UiConstants.defaultPadding * 0.2,
+                      height: UiConstants.defaultPadding * 0.5,
                     ),
                     _openButton(),
                   ],
@@ -124,7 +126,8 @@ class _TaskCard extends GetView<MapPageController> {
 
   Widget _taskData() {
     return Text(
-      DateTime.parse(controller.tasks![index].createDateTime).formatMMMMY(),
+      DateFormat('yMMMMd', 'ru')
+          .format(DateTime.parse(controller.tasks![index].createDateTime)),
       style: const TextStyle(
         fontSize: 10,
         fontWeight: FontWeight.w800,
@@ -135,17 +138,14 @@ class _TaskCard extends GetView<MapPageController> {
   Widget _taskCategory() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.orange,
+        color: Colors.orangeAccent,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5),
         child: Text(
           controller.tasks![index].category.name,
-          style: const TextStyle(
-            fontSize: 10,
-            letterSpacing: 1,
-          ),
+          style: TextStyle(fontSize: 10, color: CustomColors.customTextColor),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -156,7 +156,7 @@ class _TaskCard extends GetView<MapPageController> {
   Widget _taskState() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.orange,
+        color: _getColor(),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Padding(
@@ -170,18 +170,31 @@ class _TaskCard extends GetView<MapPageController> {
             }
             return "на исполнении";
           })(),
-          style: const TextStyle(
-            fontSize: 10,
-            letterSpacing: 1,
-          ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
+          style: TextStyle(fontSize: 10, color: CustomColors.customTextColor),
         ),
       ),
     );
   }
 
   Widget _openButton() {
-    return ElevatedButton(onPressed: () {}, child: const Text("open"));
+    return ElevatedButton.icon(
+      onPressed: () =>
+          Get.toNamed(RoutesClass.task, arguments: controller.tasks![index].id),
+      icon: const Icon(Icons.open_in_new),
+      label: const Text(
+        "открыть",
+        style: TextStyle(fontSize: 10),
+      ),
+    );
+  }
+
+  Color _getColor() {
+    if (controller.tasks![index].isDone) {
+      return CustomColors.completedTaskColor;
+    } else if (controller.tasks![index].isExpired) {
+      return CustomColors.expiredTaskColor;
+    } else {
+      return CustomColors.currentTaskColor;
+    }
   }
 }

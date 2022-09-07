@@ -3,7 +3,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:road_work_front_end/routes/routes.dart';
+import 'package:road_work_front_end/shared_components/theme_service.dart';
 import 'package:road_work_front_end/theme/theme.dart';
 
 import 'localization/localization.dart';
@@ -17,6 +19,7 @@ void main() async {
 
 Future<void> initialize() async {
   await GetStorage.init();
+  initializeDateFormatting();
   Get.lazyPut<LoginController>(() => LoginController());
 }
 
@@ -35,10 +38,12 @@ class MyApp extends GetWidget<LoginController> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return GetMaterialApp(
+              debugShowCheckedModeBanner: false,
               initialRoute: RoutesClass.home,
               getPages: RoutesClass.routes,
               theme: Themes().lightTheme,
               darkTheme: Themes().darkTheme,
+              themeMode: ThemeService().getThemeMode(),
               translations: Localization(),
               locale: const Locale('ru', 'RU'),
               scrollBehavior: CustomScrollBehaviour(),
@@ -56,7 +61,7 @@ class MyApp extends GetWidget<LoginController> {
 class CustomScrollBehaviour extends MaterialScrollBehavior {
   @override
   Set<PointerDeviceKind> get dragDevices => {
-    PointerDeviceKind.touch,
-    PointerDeviceKind.mouse,
-  };
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+      };
 }

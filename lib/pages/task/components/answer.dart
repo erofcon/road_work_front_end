@@ -1,10 +1,11 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:road_work_front_end/pages/task/models/task_response.dart';
-import 'package:road_work_front_end/utils/constants.dart';
-import 'package:road_work_front_end/utils/helpers/extension.dart';
+import 'package:road_work_front_end/theme/colors.dart';
 
+import '../../../utils/constants.dart';
 import '../../../utils/responsive.dart';
 import '../controller/task_controller.dart';
 
@@ -13,7 +14,8 @@ class TaskAnswerList extends GetView<TaskController> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(()=> Container(
+    return Obx(
+      () => Container(
         constraints: BoxConstraints(maxHeight: context.height / 2),
         child: ListView.builder(
           shrinkWrap: true,
@@ -37,21 +39,24 @@ class RecentTask extends GetView<TaskController> {
     return Column(
       children: <Widget>[
         ListTile(
+          contentPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(UiConstants.defaultPadding),
           ),
           leading: _buildIcon(),
           title: _buildTitle(),
           subtitle: _buildSubtitle(),
-          trailing: ResponsiveBuilder.isDesktop(context)?
-          SizedBox(
-            height: 50,
-            width: 300,
-            child: AnswerGallery(index: index),
-          ):null,
+          trailing: ResponsiveBuilder.isDesktop(context)
+              ? SizedBox(
+                  height: 50,
+                  width: 300,
+                  child: AnswerGallery(index: index),
+                )
+              : null,
           // trailing: AnswerGallery(index: index),
         ),
-        if (ResponsiveBuilder.isMobile(context) || ResponsiveBuilder.isTablet(context))
+        if (ResponsiveBuilder.isMobile(context) ||
+            ResponsiveBuilder.isTablet(context))
           SizedBox(
             height: 50,
             width: context.width,
@@ -63,9 +68,8 @@ class RecentTask extends GetView<TaskController> {
 
   Widget _buildTitle() {
     return Text(
-      DateTime.parse(controller.task.value.answer[index].replyDate)
-          .formatdMMMMY()
-          .toLowerCase(),
+      DateFormat('yMMMMd', 'ru').format(
+          DateTime.parse(controller.task.value.answer[index].replyDate)),
       style: const TextStyle(fontWeight: FontWeight.bold),
       overflow: TextOverflow.ellipsis,
     );
@@ -80,11 +84,11 @@ class RecentTask extends GetView<TaskController> {
   Widget _buildIcon() {
     return CircleAvatar(
       radius: 25,
-      backgroundColor: Colors.orange.withOpacity(.2),
+      backgroundColor: CustomColors.userColor,
       child: Text(
         '${controller.task.value.executor.firstName[0].toUpperCase()}${controller.task.value.executor.lastName[0].toUpperCase()}',
         style: const TextStyle(
-          color: Colors.orange,
+          color: Colors.white,
           fontWeight: FontWeight.bold,
         ),
         maxLines: 1,
@@ -116,7 +120,7 @@ class AnswerGallery extends GetView<TaskController> {
               borderRadius:
                   BorderRadius.circular(UiConstants.defaultPadding * 2),
               onTap: () {
-                Get.to(()=>AnswerImageCarousel(
+                Get.dialog(AnswerImageCarousel(
                   currentIndex: i,
                   images: controller.task.value.answer[index].answerImages,
                 ));

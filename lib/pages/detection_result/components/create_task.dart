@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:road_work_front_end/pages/detection_result/controller/detection_result_controller.dart';
 
 import '../../../utils/constants.dart';
-import '../../../utils/helpers/date_time.dart';
+import '../../../utils/helpers/date_time_select.dart';
 import '../../create_task/controller/single_task_controller.dart';
 import '../../create_task/models/task_category_response.dart';
 import '../../dashboard/models/related_user_response.dart';
@@ -18,108 +18,119 @@ class CreateTask extends GetView<DetectionResultController> {
       appBar: AppBar(),
       body: Obx(() {
         return SingleChildScrollView(
-          child: Stepper(
-            currentStep: controller.singleTaskController.activeStepIndex.value,
-            steps: <Step>[
-              Step(
-                  state: controller.singleTaskController.categoryError.isTrue
-                      ? StepState.error
-                      : StepState.indexed,
-                  isActive:
-                      controller.singleTaskController.activeStepIndex.value == 0
+          child: Center(
+            child: Container(
+              padding:
+                  const EdgeInsets.only(top: UiConstants.defaultPadding * 2),
+              constraints: const BoxConstraints(maxWidth: 500),
+              child: Stepper(
+                currentStep:
+                    controller.singleTaskController.activeStepIndex.value,
+                steps: <Step>[
+                  Step(
+                      state:
+                          controller.singleTaskController.categoryError.isTrue
+                              ? StepState.error
+                              : StepState.indexed,
+                      isActive: controller
+                                  .singleTaskController.activeStepIndex.value ==
+                              0
                           ? true
                           : false,
-                  title: const Text("Категория и описание задачи"),
-                  content: Align(
-                    alignment: Alignment.topLeft,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        const Category(),
-                        controller.singleTaskController.categoryError.value
-                            ? const Text(
-                                "пожалуйста, выберите категорию",
-                                style: TextStyle(color: Colors.red),
-                              )
-                            : const Text(''),
-                        const Description()
-                      ],
-                    ),
-                  )),
-              Step(
-                state: controller.singleTaskController.executorError.isTrue ||
-                        controller.singleTaskController.expireDateError.isTrue
-                    ? StepState.error
-                    : StepState.indexed,
-                isActive:
-                    controller.singleTaskController.activeStepIndex.value == 1
-                        ? true
-                        : false,
-                title: const Text("Исполнитель и срок выполнения"),
-                content: Align(
-                  alignment: Alignment.topLeft,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      const RelUser(),
-                      controller.singleTaskController.executorError.isTrue
-                          ? const Text("пожалуйста, выберите исполнителя",
-                              style: TextStyle(color: Colors.red))
-                          : const Text(''),
-                      Container(
-                          constraints: const BoxConstraints(maxWidth: 500),
-                          child: const ExpireDate()),
-                      controller.singleTaskController.expireDateError.isTrue
-                          ? const Text("пожалуйста, выберите исполнителя",
-                              style: TextStyle(color: Colors.red))
-                          : const Text(''),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-            onStepContinue: onStepContinue,
-            onStepCancel: onStepCancel,
-            onStepTapped: (int index) => onStepContinue(next: index),
-            controlsBuilder: (context, details) {
-              final isLastStep =
-                  controller.singleTaskController.activeStepIndex.value == 1;
-              return Align(
-                alignment: Alignment.topLeft,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: UiConstants.defaultPadding),
-                  constraints: const BoxConstraints(maxWidth: 500),
-                  child: controller.singleTaskController.uploadTask
-                      ? const Center(
-                          child: CircularProgressIndicator(
-                          strokeWidth: 5.0,
-                        ))
-                      : Row(
+                      title: const Text("Категория и описание задачи"),
+                      content: Align(
+                        alignment: Alignment.topLeft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            if (!isLastStep)
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: onStepContinue,
-                                  child: const Text('Вперед'),
-                                ),
-                              ),
-                            const SizedBox(
-                              width: UiConstants.defaultPadding,
-                            ),
-                            if (controller.singleTaskController.activeStepIndex
-                                    .value >
-                                0)
-                              Expanded(
-                                child: ElevatedButton(
-                                    onPressed: onStepCancel,
-                                    child: const Text('Назад')),
-                              ),
+                            const Category(),
+                            controller.singleTaskController.categoryError.value
+                                ? const Text(
+                                    "пожалуйста, выберите категорию",
+                                    style: TextStyle(color: Colors.red),
+                                  )
+                                : const Text(''),
+                            const Description()
                           ],
                         ),
-                ),
-              );
-            },
+                      )),
+                  Step(
+                    state:
+                        controller.singleTaskController.executorError.isTrue ||
+                                controller
+                                    .singleTaskController.expireDateError.isTrue
+                            ? StepState.error
+                            : StepState.indexed,
+                    isActive:
+                        controller.singleTaskController.activeStepIndex.value ==
+                                1
+                            ? true
+                            : false,
+                    title: const Text("Исполнитель и срок выполнения"),
+                    content: Align(
+                      alignment: Alignment.topLeft,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          const RelUser(),
+                          controller.singleTaskController.executorError.isTrue
+                              ? const Text("пожалуйста, выберите исполнителя",
+                                  style: TextStyle(color: Colors.red))
+                              : const Text(''),
+                          const SizedBox(
+                            height: UiConstants.defaultPadding,
+                          ),
+                          Container(
+                              constraints: const BoxConstraints(maxWidth: 500),
+                              child: const ExpireDate()),
+                          controller.singleTaskController.expireDateError.isTrue
+                              ? const Text(
+                                  "пожалуйста, выберите срок выполнения",
+                                  style: TextStyle(color: Colors.red))
+                              : const Text(''),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+                onStepContinue: onStepContinue,
+                onStepCancel: onStepCancel,
+                onStepTapped: (int index) => onStepContinue(next: index),
+                controlsBuilder: (context, details) {
+                  final isLastStep =
+                      controller.singleTaskController.activeStepIndex.value ==
+                          1;
+                  return Align(
+                    alignment: Alignment.topLeft,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: UiConstants.defaultPadding),
+                      constraints: const BoxConstraints(maxWidth: 500),
+                      child: controller.singleTaskController.uploadTask
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                              strokeWidth: 5.0,
+                            ))
+                          : Row(
+                              children: <Widget>[
+                                if (!isLastStep)
+                                  ElevatedButton(
+                                    onPressed: onStepContinue,
+                                    child: const Text('Вперед'),
+                                  ),
+                                if (controller.singleTaskController
+                                        .activeStepIndex.value >
+                                    0)
+                                  ElevatedButton(
+                                      onPressed: onStepCancel,
+                                      child: const Text('Назад')),
+                              ],
+                            ),
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
         );
       }),
@@ -260,40 +271,23 @@ class ExpireDate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<SingleTaskController>(
-      builder: (controller) => ElevatedButton(
+      builder: (controller) => SizedBox(
+        width: context.width,
+        child: ElevatedButton.icon(
           onPressed: () async {
             final selected = await selectDate(context);
             if (selected != null) {
               controller.selectDate(selected);
             }
           },
-          style: ElevatedButton.styleFrom(
-            elevation: 0.0,
-            primary: Colors.white,
-            side: const BorderSide(width: 1, color: Colors.black12),
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(UiConstants.defaultPadding * 2),
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              children: <Widget>[
-                const Icon(
-                  Icons.date_range_outlined,
-                  color: Colors.black,
-                  size: 48,
-                ),
-                const SizedBox(
-                  height: UiConstants.defaultPadding,
-                ),
-                Text(
-                  controller.expiredDateTime != null
-                      ? controller.expiredDateTime.toString()
-                      : "Выбрать дату",
-                  style: const TextStyle(color: Colors.black),
-                ),
-              ],
-            ),
-          )),
+          icon: controller.expiredDateTime == null
+              ? const Icon(Icons.access_time)
+              : const Icon(Icons.check_circle_outline),
+          label: controller.expiredDateTime == null
+              ? const Text("Установите срок выполнения")
+              : const Text("Срок выполения выбрано"),
+        ),
+      ),
     );
   }
 }

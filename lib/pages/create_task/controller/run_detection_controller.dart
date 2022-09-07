@@ -5,6 +5,7 @@ import 'package:large_file_uploader/large_file_uploader.dart';
 
 import '../../../service/api_service.dart';
 import '../../../service/web_service.dart';
+import '../../../theme/colors.dart';
 
 class RunDetectionController extends GetxController {
   final runDateTime = Rx<DateTime?>(null);
@@ -70,21 +71,26 @@ class RunDetectionController extends GetxController {
   }
 
   void uploadComplete() {
-    Get.showSnackbar(const GetSnackBar(
-      title: "Успех",
-      message:
-          "видео отправлено на детектирование. после окончания вы получите уведомление",
-      backgroundColor: Colors.green,
-    ));
+    Get.snackbar("Успех",
+        "Видео отправлено на детектирование. После окончания вы получите уведомление",
+        margin: EdgeInsets.zero,
+        duration: const Duration(seconds: 2),
+        borderRadius: 0,
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: CustomColors.completedTaskColor);
+
     isUploadVideo(false);
   }
 
   void uploadError() {
-    Get.showSnackbar(const GetSnackBar(
-      title: "Ошибка!",
-      message: "не удалось загрузить видео. повторите попытку позже",
-      backgroundColor: Colors.red,
-    ));
+    Get.snackbar(
+        "Ошибка", "Не удалось загрузить видео. Повторите попытку позже",
+        margin: EdgeInsets.zero,
+        duration: const Duration(seconds: 2),
+        borderRadius: 0,
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: CustomColors.expiredTaskColor);
+
     isUploadVideo(false);
   }
 }

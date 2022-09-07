@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:road_work_front_end/pages/dashboard/controller/dashboard_controller.dart';
 
+import '../../../theme/colors.dart';
+
 class RelatedUsers extends GetView<DashboardController> {
   const RelatedUsers({
     Key? key,
@@ -44,7 +46,10 @@ class SimpleUserProfile extends StatelessWidget {
         title: _buildName(),
         trailing: IconButton(
           onPressed: onPressed,
-          icon: const Icon(Icons.open_in_new),
+          icon: Icon(
+            Icons.open_in_new,
+            color: CustomColors.iconColor,
+          ),
           splashRadius: 24,
         ),
       ),
@@ -54,11 +59,11 @@ class SimpleUserProfile extends StatelessWidget {
   Widget _buildAvatar() {
     return CircleAvatar(
       radius: 20,
-      backgroundColor: Colors.orange.withOpacity(.2),
+      backgroundColor: CustomColors.userColor,
       child: Text(
         firstName[0].toUpperCase() + lastName[0].toUpperCase(),
         style: const TextStyle(
-          color: Colors.orange,
+          color: Colors.white,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -69,7 +74,6 @@ class SimpleUserProfile extends StatelessWidget {
     return Text(
       '$firstName $lastName',
       style: const TextStyle(
-        fontWeight: FontWeight.bold,
         fontSize: 13,
       ),
       maxLines: 1,

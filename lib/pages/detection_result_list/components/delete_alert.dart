@@ -14,18 +14,15 @@ class DeleteAlert extends GetView<DetectionResultListController> {
         return const Center(child: CircularProgressIndicator());
       } else {
         return AlertDialog(
-          title: const Text('AlertDialog Title'),
-          // content: const Text('AlertDialog description'),
+          title: Text('delete_detection_question'.tr),
           actions: <Widget>[
             TextButton(
               onPressed: () => Get.back(),
-              // onPressed: () => Navigator.pop(context, 'Cancel'),
-              child: const Text('Cancel'),
+              child: Text('cancel'.tr),
             ),
             TextButton(
               onPressed: () => controller.deleteDetection(index),
-              // onPressed: closeTask,
-              child: const Text('OK'),
+              child: Text('ok'.tr),
             ),
           ],
         );

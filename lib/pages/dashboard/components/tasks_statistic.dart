@@ -4,8 +4,6 @@ import 'package:get/get.dart';
 import 'package:road_work_front_end/pages/dashboard/controller/dashboard_controller.dart';
 import 'package:road_work_front_end/utils/constants.dart';
 
-import '../../../shared_components/chart_data.dart';
-
 class TasksStatistic extends GetView<DashboardController> {
   const TasksStatistic({Key? key}) : super(key: key);
 
@@ -92,7 +90,7 @@ class StatisticTaskInfo extends StatelessWidget {
   }
 }
 
-class Chart extends StatelessWidget {
+class Chart extends GetView<DashboardController> {
   const Chart({Key? key}) : super(key: key);
 
   @override
@@ -102,7 +100,7 @@ class Chart extends StatelessWidget {
         child: PieChart(
           PieChartData(
               startDegreeOffset: 180,
-              sections: taskChartData,
+              sections: controller.taskChartData,
               centerSpaceRadius: double.infinity),
         ));
   }

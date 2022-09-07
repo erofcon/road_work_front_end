@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
@@ -6,6 +7,9 @@ import 'package:get/get.dart' as gtx;
 import 'package:get/get_connect/http/src/status/http_status.dart';
 import 'package:get/get_utils/get_utils.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:road_work_front_end/pages/create_task/models/task_category_response.dart';
 import 'package:road_work_front_end/pages/dashboard/models/count_tasks_response.dart';
 import 'package:road_work_front_end/pages/detection_result_list/models/detection_result_list_model.dart';
@@ -13,6 +17,8 @@ import 'package:road_work_front_end/pages/map/models/geo_json_response.dart';
 import 'package:road_work_front_end/pages/map/models/get_task_to_map_response.dart';
 import 'package:road_work_front_end/pages/report/models/report_get_count_task_response.dart';
 import 'package:road_work_front_end/utils/constants.dart';
+import 'package:universal_html/html.dart' as html;
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../pages/dashboard/models/related_user_response.dart';
 import '../pages/detection_result/models/detection_result_response.dart';
@@ -21,10 +27,6 @@ import '../pages/login/models/login_response.dart';
 import '../pages/login/service/login_cache.dart';
 import '../pages/task/models/task_response.dart';
 import '../pages/task_list/models/task_list.dart';
-
-
-import 'package:http/http.dart' as h;
-import 'dart:html' as html;
 
 class ApiService with LoginCache {
   Future<LoginResponse?> login(LoginRequest model) async {
@@ -171,14 +173,15 @@ class ApiService with LoginCache {
     }
   }
 
-  Future<TaskList?> getTaskList() async {
+  Future<TaskList?> getTaskList(int page, String value) async {
     final token = await getToken();
 
     if (token != null) {
       Map<String, String> headers = {"Authorization": "Bearer $token"};
 
-      final response = await Dio()
-          .get(ApiUrl.getTaskList, options: Options(headers: headers));
+      final response = await Dio().get(ApiUrl.getTaskList,
+          options: Options(headers: headers),
+          queryParameters: {'page': page, 'value': value});
       if (response.statusCode == HttpStatus.ok) {
         return taskResult(response.toString());
       } else {
@@ -460,46 +463,126 @@ class ApiService with LoginCache {
     return null;
   }
 
-
-  Future<bool> createReport(
-      DateTime start, DateTime end) async {
+  Future<bool> createReport(DateTime start, DateTime end) async {
     final token = await getToken();
 
     if (token != null) {
-      Map<String, String> headers = {"Authorization": "Bearer $token", 'Content-Type':'application/ms-excel'};
+      Map<String, String> headers = {
+        "Authorization": "Bearer $token",
+        'Content-Type': 'application/ms-excel',
+      };
 
-      // Response response = await Dio().download(
-      //   ApiUrl.createReport,
-      //   "./example/flutter.xlsx",
-      //   queryParameters: {'start': start.toString(), 'end': end.toString()},
-      //   options: Options(headers: headers),
-      // );
+      if (GetPlatform.isWeb) {
+        var res = await Dio().get(ApiUrl.createReport,
+            queryParameters: {'start': start.toString(), 'end': end.toString()},
+            options:
+                Options(headers: headers, responseType: ResponseType.bytes));
 
-      html.AnchorElement anchorElement = html.AnchorElement(href: '${ApiUrl.createReport};header:${headers}');
-      anchorElement.download = "myDocument.xlsx"; //in my case is .pdf
-      anchorElement.click();
+        final blob = html.Blob([res.data]);
+        final url = html.Url.createObjectUrlFromBlob(blob);
+        final anchor = html.document.createElement('a') as html.AnchorElement
+          ..href = url
+          ..style.display = 'none'
+          ..download = '${DateTime.now().toString()}.xlsx';
+        html.document.body?.children.add(anchor);
 
-      // if (response.statusCode == HttpStatus.ok) {
+        anchor.click();
 
-        // final blob = html.Blob([response]);
-        // final url = html.Url.createObjectUrlFromBlob(blob);
-        // final anchor = html.document.createElement('a') as html.AnchorElement
-        //   ..href = url
-        //   ..style.display = 'none'
-        //   ..download = "test.xlsx";
-        // html.document.body?.children.add(anchor);
-        //
-        // anchor.click();
-        //
-        // html.document.body?.children.remove(anchor);
-        // html.Url.revokeObjectUrl(url);
+        html.document.body?.children.remove(anchor);
+        html.Url.revokeObjectUrl(url);
+      } else {
+        await Permission.storage.request();
+        bool hasPermission = await Permission.storage.request().isGranted;
+        if (!hasPermission) return false;
+        var dir = await getApplicationDocumentsDirectory();
 
-      //   return true;
-      // } else {
-      //   return false;
-      // }
+        String fileName = '${DateTime.now().toString()}.xlsx';
+        Dio dio = Dio();
+        await dio.download(ApiUrl.createReport, "${dir.path}/$fileName",
+            queryParameters: {'start': start.toString(), 'end': end.toString()},
+            options: Options(headers: headers));
+        OpenFile.open("${dir.path}/$fileName",
+            type:
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      }
     }
 
+    return false;
+  }
+
+  Future<void> connectWebSocket(Function getMessage) async {
+    final token = await getToken();
+
+    if (token != null) {
+      final wsUrl =
+          Uri.parse('ws://192.168.1.34:8000/ws/notification?token=$token');
+      WebSocketChannel channel = WebSocketChannel.connect(wsUrl);
+
+      Map<String, dynamic> getTaskNotificationList = {
+        "action": "get_task_notification_list",
+        "request_id": DateTime.now().toString()
+      };
+      Map<String, dynamic> getDetectionNotificationList = {
+        "action": "get_detection_notification_list",
+        "request_id": DateTime.now().toString()
+      };
+      Map<String, dynamic> subscribeTaskNotificationActivity = {
+        "action": "subscribe_task_notification_activity",
+        "request_id": DateTime.now().toString()
+      };
+      Map<String, dynamic> subscribeDetectionNotificationActivity = {
+        "action": "subscribe_detection_notification_activity",
+        "request_id": DateTime.now().toString()
+      };
+
+      channel.sink.add(json.encode(getTaskNotificationList));
+      channel.sink.add(json.encode(getDetectionNotificationList));
+      channel.sink.add(json.encode(subscribeTaskNotificationActivity));
+      channel.sink.add(json.encode(subscribeDetectionNotificationActivity));
+
+      channel.stream.listen((message) {
+        getMessage(message);
+      });
+    }
+  }
+
+  Future<bool> deleteTaskNotification(int id, String type) async {
+    final token = await getToken();
+
+    if (token != null) {
+      Map<String, String> headers = {"Authorization": "Bearer $token"};
+
+      Response response = await Dio().delete(
+        '${ApiUrl.deleteTaskNotification}/$id/$type',
+        options: Options(headers: headers),
+      );
+
+      if (response.statusCode == HttpStatus.noContent) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return false;
+  }
+
+  Future<bool> deleteDetectionNotification(int id) async {
+    final token = await getToken();
+
+    if (token != null) {
+      Map<String, String> headers = {"Authorization": "Bearer $token"};
+
+      Response response = await Dio().delete(
+        '${ApiUrl.deleteDetectionNotification}/$id',
+        options: Options(headers: headers),
+      );
+
+      if (response.statusCode == HttpStatus.noContent) {
+        return true;
+      } else {
+        return false;
+      }
+    }
     return false;
   }
 }

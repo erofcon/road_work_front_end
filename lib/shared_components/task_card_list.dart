@@ -6,6 +6,7 @@ class TaskCardInfo {
   final Color primary;
   final Color textColor;
   final Widget iconWidget;
+  final String routArguments;
 
   TaskCardInfo({
     required this.count,
@@ -13,6 +14,7 @@ class TaskCardInfo {
     required this.primary,
     required this.textColor,
     required this.iconWidget,
+    required this.routArguments
   });
 }
 

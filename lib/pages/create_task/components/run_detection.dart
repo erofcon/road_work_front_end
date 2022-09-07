@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:road_work_front_end/utils/constants.dart';
 
-import '../../../utils/helpers/date_time.dart';
+import '../../../theme/colors.dart';
+import '../../../utils/helpers/date_time_select.dart';
 import '../controller/run_detection_controller.dart';
 
 class RunDetection extends StatelessWidget {
@@ -36,15 +38,13 @@ class RunDetection extends StatelessWidget {
             const SizedBox(
               height: UiConstants.defaultPadding,
             ),
-            const
-            SelectFile(),
+            const SelectFile(),
             const SizedBox(
               height: UiConstants.defaultPadding * 0.5,
             ),
             Text(
               "video_description".tr,
-              // S.of(context).accepted_video_types,
-              style: const TextStyle(color: Colors.black45),
+              style: TextStyle(color: CustomColors.iconColor),
             ),
             const SizedBox(
               height: UiConstants.defaultPadding,
@@ -63,52 +63,34 @@ class DateTimeSelect extends GetView<RunDetectionController> {
   @override
   Widget build(BuildContext context) {
     return Obx(
-      () => Column(children: <Widget>[
-        ElevatedButton(
-            onPressed: () async {
-              final date = await selectDate(context);
-              if (date == null) return;
+      () => SizedBox(
+        width: context.width,
+        child: ElevatedButton.icon(
+          onPressed: () async {
+            final date = await selectDate(context);
+            if (date == null) return;
 
-              final time = await selectTime(context);
-              if (time == null) return;
+            final time = await selectTime(context);
+            if (time == null) return;
 
-              DateTime dateTime = DateTime(
-                date.year,
-                date.month,
-                date.day,
-                time.hour,
-                time.minute,
-              );
-
-              controller.selectDateTime(dateTime);
-            },
-            style: ElevatedButton.styleFrom(
-              elevation: 0.0,
-              primary: Colors.white,
-              side: const BorderSide(width: 1, color: Colors.black12),
-            ),
-            child: Container(
-              padding: const EdgeInsets.all(UiConstants.defaultPadding * 2),
-              width: context.width,
-              child: controller.runDateTime.value == null
-                  ? const Icon(
-                      Icons.calendar_month_outlined,
-                      color: Colors.black,
-                      size: 48,
-                    )
-                  : Text(
-                      controller.runDateTime.toString(),
-                      style: const TextStyle(color: Colors.black54),
-                    ),
-            )),
-        if (controller.errorSelect.isTrue)
-          Center(
-            child: Text(
-              'select_date_time'.tr.toLowerCase(),
-              style: const TextStyle(color: Colors.red),
-            ),
-          ),
-      ]),
+            DateTime dateTime = DateTime(
+              date.year,
+              date.month,
+              date.day,
+              time.hour,
+              time.minute,
+            );
+            controller.selectDateTime(dateTime);
+          },
+          icon: controller.runDateTime.value == null
+              ? const Icon(Icons.access_time)
+              : const Icon(null),
+          label: controller.runDateTime.value == null
+              ? const Text("Дата и время выезда")
+              : Text(DateFormat('yMMMMd', 'ru').format(
+                  DateTime.parse(controller.runDateTime.value.toString()))),
+        ),
+      ),
     );
   }
 }
@@ -119,39 +101,23 @@ class SelectFile extends GetView<RunDetectionController> {
   @override
   Widget build(BuildContext context) {
     return Obx(
-      () => Column(
-        children: <Widget>[
-          ElevatedButton(
-              onPressed: () {
-                if (GetPlatform.isWeb) {
-                  controller.webSelectFile();
-                } else {
-                  controller.ioSelectVideo();
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                elevation: 0.0,
-                primary: Colors.white,
-                side: const BorderSide(width: 1, color: Colors.black12),
-              ),
-              child: Container(
-                padding: const EdgeInsets.all(UiConstants.defaultPadding * 2),
-                width: context.width,
-                child: controller.videoFile.value == null
-                    ? const Icon(
-                        Icons.upload,
-                        color: Colors.black,
-                        size: 48,
-                      )
-                    : Text(controller.videoFile.value.name,
-                        style: const TextStyle(color: Colors.black)),
-              )),
-          if (controller.errorSelect.isTrue)
-            Center(
-              child: Text('select_video'.tr.toLowerCase(),
-                  style: const TextStyle(color: Colors.red)),
-            ),
-        ],
+      () => SizedBox(
+        width: context.width,
+        child: ElevatedButton.icon(
+          onPressed: () {
+            if (GetPlatform.isWeb) {
+              controller.webSelectFile();
+            } else {
+              controller.ioSelectVideo();
+            }
+          },
+          icon: controller.videoFile.value == null
+              ? const Icon(Icons.video_call_outlined)
+              : const Icon(Icons.check_circle_outline),
+          label: controller.videoFile.value == null
+              ? const Text("Видео файл")
+              : const Text("Видео файл выбран"),
+        ),
       ),
     );
   }
@@ -172,16 +138,19 @@ class UploadProgress extends GetView<RunDetectionController> {
           progressColor: Theme.of(context).primaryColor,
         ));
       } else {
-        return ElevatedButton(
-          onPressed: () => controller.uploadVideo(),
-          style: ElevatedButton.styleFrom(
-            primary: Theme.of(context).primaryColor,
-          ),
-          child: SizedBox(
-            width: context.width,
-            height: 35,
-            child: Center(child: Text('upload'.tr)),
-          ),
+        return Column(
+            children: <Widget>[
+              SizedBox(
+                width: context.width,
+                child: ElevatedButton.icon(
+                  onPressed: () => controller.uploadVideo(),
+                  icon: const Icon(Icons.upload),
+                  label: Text('upload'.tr),
+                ),
+              ),
+              if(controller.errorSelect.isTrue)
+                const Text("Обязательные поляне выбраны", style: TextStyle(color: Colors.red),)
+            ],
         );
       }
     });

@@ -22,9 +22,7 @@ class DetectionResultListPage extends GetView<DetectionResultListController> {
         } else {
           return Center(
             child: Container(
-              padding:
-                  const EdgeInsets.only(top: UiConstants.defaultPadding * 2),
-              constraints: const BoxConstraints(maxWidth: 700),
+              constraints: const BoxConstraints(maxWidth: 1000),
               child: Align(
                   alignment: Alignment.topCenter,
                   child: ListView.builder(
@@ -55,10 +53,16 @@ class DetectionResult extends GetView<DetectionResultListController> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(UiConstants.defaultPadding),
       ),
-      onTap: () => Get.toNamed(RoutesClass.detailDetectionResult, parameters: {'id':controller.detectionList.value![index].id.toString()}),
+      onTap: () => Get.toNamed(RoutesClass.detailDetectionResult, parameters: {
+        'id': controller.detectionList.value![index].id.toString()
+      }),
       title: _buildTitle(),
       subtitle: _buildSubtitle(),
-      trailing: _deleteButton(),
+      trailing: controller.loginController.user?.isCreator == true
+          ? DeleteButton(
+              index: index,
+            )
+          : null,
     );
   }
 
@@ -76,8 +80,21 @@ class DetectionResult extends GetView<DetectionResultListController> {
     return Text(
         "колличество изображении ${controller.detectionList.value![index].countImg}");
   }
+}
 
-  Widget _deleteButton() {
-    return ElevatedButton(onPressed: () => Get.dialog(DeleteAlert(index: controller.detectionList.value![index].id,)), child: const Text("Удалить"));
+class DeleteButton extends GetView<DetectionResultListController> {
+  const DeleteButton({Key? key, required this.index}) : super(key: key);
+
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        style:
+            ElevatedButton.styleFrom(primary: Theme.of(context).primaryColor),
+        onPressed: () => Get.dialog(DeleteAlert(
+              index: controller.detectionList.value![index].id,
+            )),
+        child: const Text("Удалить"));
   }
 }

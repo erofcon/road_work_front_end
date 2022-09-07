@@ -17,7 +17,8 @@ class HeadTaskAnswer extends GetView<TaskController> {
             )),
         const Spacer(),
         if (controller.loginController.user?.isSuperUser != true &&
-            !controller.task.value.isExpired)
+            !controller.task.value.isExpired &&
+            !controller.task.value.isDone)
           ElevatedButton.icon(
             icon: Icon(
               controller.loginController.user?.isExecutor == true
@@ -55,7 +56,7 @@ class _AddAnswer extends GetView<TaskController> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: Theme.of(context).scaffoldBackgroundColor,
       height: context.height / 2,
       padding: const EdgeInsets.all(UiConstants.defaultPadding),
       child: Column(
@@ -76,7 +77,8 @@ class _AddAnswer extends GetView<TaskController> {
           const SizedBox(
             height: UiConstants.defaultPadding,
           ),
-          _SelectFile(),
+          Container(
+              constraints: const BoxConstraints(maxWidth: 500), child: _SelectFile()),
           const SizedBox(
             height: UiConstants.defaultPadding,
           ),
@@ -91,13 +93,16 @@ class _SelectFile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<TaskController>(
-      builder: (controller) => ElevatedButton(
-        onPressed: () => controller.selectFile(),
-        child: Padding(
-          padding: const EdgeInsets.all(UiConstants.defaultPadding),
-          child: Text(controller.files != null
-              ? controller.files!.first.name
-              : 'Выберите изображение'),
+      builder: (controller) => SizedBox(
+        width: context.width,
+        child: ElevatedButton.icon(
+          onPressed: () => controller.selectFile(),
+          icon: controller.files == null
+              ? const Icon(Icons.image_outlined)
+              : const Icon(Icons.check_circle_outline),
+          label: controller.files == null
+              ? const Text("Выберите изображение")
+              : const Text("Изображение выбрано"),
         ),
       ),
     );
@@ -116,18 +121,18 @@ class _CloseTask extends GetView<TaskController> {
         );
       } else {
         return AlertDialog(
-          title: const Text('AlertDialog Title'),
+          title: Text('close_task_question'.tr),
           // content: const Text('AlertDialog description'),
           actions: <Widget>[
             TextButton(
               onPressed: () => Get.back(),
               // onPressed: () => Navigator.pop(context, 'Cancel'),
-              child: const Text('Cancel'),
+              child: Text('cancel'.tr),
             ),
             TextButton(
               onPressed: controller.closeTask,
               // onPressed: closeTask,
-              child: const Text('OK'),
+              child: Text('ok'.tr),
             ),
           ],
         );

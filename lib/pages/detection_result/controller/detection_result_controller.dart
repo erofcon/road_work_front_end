@@ -3,16 +3,15 @@ import 'package:get/get.dart';
 import 'package:road_work_front_end/pages/detection_result/models/detection_result_response.dart';
 import 'package:road_work_front_end/service/api_service.dart';
 
+import '../../../theme/colors.dart';
 import '../../create_task/controller/single_task_controller.dart';
 
 class DetectionResultController extends GetxController {
   final isLoading = true.obs;
 
-  // late DetectionResultResponse? detectionResult;
-
   late Rx<DetectionResultResponse?> detectionResult;
 
-  final selectedIndex = <Images>[].obs;
+  List<Images> selectedIndex = [];
   final isLongPress = false.obs;
   final isUploadTask = false.obs;
   final isDeleteImage = false.obs;
@@ -30,7 +29,6 @@ class DetectionResultController extends GetxController {
     detectionResult =
         (await ApiService().getDetailDetection(Get.parameters['id']!)).obs;
     isLoading(false);
-    update();
   }
 
   void insertSelectIndex(Images index) {
@@ -43,11 +41,12 @@ class DetectionResultController extends GetxController {
 
   void createTask() async {
     if (selectedIndex.isEmpty) {
-      Get.showSnackbar(const GetSnackBar(
-        title: "Ошибка!",
-        message: "Изображения не выбраны!",
-        backgroundColor: Colors.red,
-      ));
+      Get.snackbar("Ошибка", "Изображения не выбраны",
+          margin: EdgeInsets.zero,
+          duration: const Duration(seconds: 1),
+          borderRadius: 0,
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: CustomColors.expiredTaskColor);
       return;
     }
 
@@ -80,26 +79,29 @@ class DetectionResultController extends GetxController {
       await deleteImage();
 
       result
-          ? Get.showSnackbar(const GetSnackBar(
-              duration: Duration(seconds: 1),
-              title: "Успех!",
-              message: "задача успешно создано!",
-              backgroundColor: Colors.green,
-            ))
-          : Get.showSnackbar(const GetSnackBar(
-              duration: Duration(seconds: 1),
-              title: "Ошибка!",
-              message: "ошибка созданеия задачи!",
-              backgroundColor: Colors.red));
+          ? Get.snackbar("Успех", "Задача успешно создано",
+              margin: EdgeInsets.zero,
+              duration: const Duration(seconds: 2),
+              borderRadius: 0,
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: CustomColors.completedTaskColor)
+          : Get.snackbar("Ошибка", "Ошибка созданеия задачи",
+              margin: EdgeInsets.zero,
+              duration: const Duration(seconds: 2),
+              borderRadius: 0,
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: CustomColors.expiredTaskColor);
 
       isUploadTask(false);
     } else {
-      Get.showSnackbar(const GetSnackBar(
-          title: "Ошибка!",
-          message: "обязательные поля не заполнены!",
-          backgroundColor: Colors.red));
+      Get.snackbar("Ошибка", "Обязательные поля не заполнены",
+          margin: EdgeInsets.zero,
+          duration: const Duration(seconds: 2),
+          borderRadius: 0,
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: CustomColors.expiredTaskColor);
     }
-    selectedIndex.clear();
+
     update();
   }
 
@@ -112,6 +114,7 @@ class DetectionResultController extends GetxController {
           return element.id == image.id;
         });
       });
+      // print(selectedIndex);
     }
     selectedIndex.clear();
     isDeleteImage(false);

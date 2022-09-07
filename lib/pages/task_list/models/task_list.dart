@@ -11,14 +11,14 @@ class TaskList {
   });
 
   late final int count;
-  late final dynamic next;
+  late dynamic next;
   late final dynamic previous;
   late final List<Results> results;
 
   TaskList.fromJson(Map<String, dynamic> json) {
     count = json['count'];
-    next = null;
-    previous = null;
+    next =  json['next'];
+    previous =  json['previous'];
     results =
         List.from(json['results']).map((e) => Results.fromJson(e)).toList();
   }
@@ -42,6 +42,7 @@ class Results {
     required this.createDateTime,
     required this.isDone,
     required this.isExpired,
+    required this.description,
   });
 
   late final int id;
@@ -49,6 +50,7 @@ class Results {
   late final Executor? executor;
   late final Creator? creator;
   late final String? createDateTime;
+  late final String? description;
   late bool? isDone;
   late final bool? isExpired;
 
@@ -60,6 +62,7 @@ class Results {
     createDateTime = json['createDateTime'];
     isDone = json['is_done'];
     isExpired = json['is_expired'];
+    description = json['description'];
   }
 
   Map<String, dynamic> toJson() {
@@ -69,6 +72,10 @@ class Results {
     data['executor'] = executor?.toJson();
     data['creator'] = creator?.toJson();
     data['createDateTime'] = createDateTime;
+    data['is_done'] = isDone;
+    data['is_expired'] = isExpired;
+    data['description'] = description;
+
     return data;
   }
 }

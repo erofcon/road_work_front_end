@@ -37,7 +37,7 @@ dependencies:
   fl_chart: ^0.55.1
   intl: ^0.17.0
   dio: ^4.0.6
-  file_picker: ^5.0.1
+  file_picker: ^4.6.1
   latlng: ^0.2.0
   flutter_map: ^2.2.0
   geolocator: ^9.0.1
@@ -45,6 +45,13 @@ dependencies:
   percent_indicator: ^4.2.2
   extended_image: ^6.2.1
   flutter_map_marker_popup: ^3.2.0
+  universal_html: ^2.0.8
+  path_provider: ^2.0.11
+  permission_handler: ^10.0.0
+  open_file: ^3.2.1
+  font_awesome_flutter: ^10.1.0
+  flutter_local_notifications: ^9.9.1
+  web_socket_channel: ^2.2.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

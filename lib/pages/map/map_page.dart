@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:road_work_front_end/pages/map/controller/map_controller.dart';
 
+import '../../utils/helpers/map_helpers.dart';
 import 'components/map_alert.dart';
 
 class MapPage extends GetView<MapPageController> {
@@ -31,8 +32,7 @@ class MapPage extends GetView<MapPageController> {
             children: [
               TileLayerWidget(
                 options: TileLayerOptions(
-                  urlTemplate:
-                      'https://www.google.com/maps/vt/pb=!1m4!1m3!1i{z}!2i{x}!3i{y}!2m3!1e0!2sm!3i420120488!3m7!2sen!5e1105!12m4!1e68!2m2!1sset!2sRoadmap!4e0!5m1!1e0!23i4111425',
+                  urlTemplate: MapHelpers.lightMapTile
                 ),
               ),
               PopupMarkerLayerWidget(

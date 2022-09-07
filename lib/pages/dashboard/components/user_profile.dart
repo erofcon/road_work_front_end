@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:road_work_front_end/pages/login/controller/login_controller.dart';
+import 'package:road_work_front_end/theme/colors.dart';
 import 'package:road_work_front_end/utils/constants.dart';
 
 class UserProfile extends GetView<LoginController> {
   const UserProfile({
     required this.onPressed,
-    this.imageUrl,
     Key? key,
   }) : super(key: key);
 
-  final String? imageUrl;
   final Function() onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
       padding: const EdgeInsets.all(UiConstants.defaultPadding),
       child: InkWell(
         borderRadius: BorderRadius.circular(UiConstants.defaultPadding),
@@ -24,14 +23,14 @@ class UserProfile extends GetView<LoginController> {
           padding: const EdgeInsets.all(UiConstants.defaultPadding),
           child: Row(
             children: [
-              _buildImage(),
+              const _BuildImage(),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildName(),
+                    const _BuildName(),
                     _buildJob(),
                   ],
                 ),
@@ -43,23 +42,6 @@ class UserProfile extends GetView<LoginController> {
     );
   }
 
-  Widget _buildImage() {
-    return CircleAvatar(
-      radius: 25,
-      backgroundImage: imageUrl != null ? NetworkImage(imageUrl!) : null,
-    );
-  }
-
-  Widget _buildName() {
-    return Text(
-      '${controller.user?.firstName} ${controller.user?.lastName}',
-      style: const TextStyle(
-        fontWeight: FontWeight.bold,
-      ),
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-    );
-  }
 
   Widget _buildJob() {
     return Text(
@@ -73,11 +55,51 @@ class UserProfile extends GetView<LoginController> {
         }
         return '';
       })(),
-      style: const TextStyle(
+      style: TextStyle(
         fontWeight: FontWeight.w300,
+        color: CustomColors.iconColor,
       ),
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
+    );
+  }
+}
+
+class _BuildName extends GetView<LoginController> {
+  const _BuildName({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      '${controller.user?.firstName} ${controller.user?.lastName}',
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+}
+
+class _BuildImage extends GetView<LoginController> {
+  const _BuildImage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CircleAvatar(
+      radius: 25,
+      backgroundColor: CustomColors.avatarColor,
+      child: Text(
+        (() {
+          if (controller.user!.firstName != '' &&
+              controller.user!.lastName != '') {
+            return controller.user!.firstName![0].toUpperCase() +
+                controller.user!.lastName![0].toUpperCase();
+          }
+          return '';
+        })(),
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 }

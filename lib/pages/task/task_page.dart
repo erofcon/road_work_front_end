@@ -6,8 +6,8 @@ import '../../utils/constants.dart';
 import '../../utils/responsive.dart';
 import 'components/answer.dart';
 import 'components/gallery.dart';
+import 'components/head_task_answer.dart';
 import 'components/head_task_page.dart';
-import 'components/heead_task_answer.dart';
 import 'components/task_location.dart';
 import 'components/user.dart';
 
@@ -64,28 +64,31 @@ class TaskPage extends GetView<TaskController> {
                 );
               },
               desktopBuilder: (context, constraints) {
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Flexible(
-                      flex: constraints.maxWidth > 1350 ? 10 : 9,
-                      child: SingleChildScrollView(
-                        controller: ScrollController(),
-                        child: _buildTaskContent(),
-                      ),
-                    ),
-                    SizedBox(
-                      height: context.height,
-                      child: const VerticalDivider(),
-                    ),
-                    Flexible(
-                      flex: 4,
-                      child: SingleChildScrollView(
-                        controller: ScrollController(),
-                        child: _buildMapContent(),
-                      ),
-                    ),
-                  ],
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: UiConstants.defaultPadding*5),
+                  child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Flexible(
+                            flex: constraints.maxWidth > 1350 ? 10 : 9,
+                            child: SingleChildScrollView(
+                              controller: ScrollController(),
+                              child: _buildTaskContent(),
+                            ),
+                          ),
+                          SizedBox(
+                            height: context.height,
+                            child: const VerticalDivider(),
+                          ),
+                          Flexible(
+                            flex: 4,
+                            child: SingleChildScrollView(
+                              controller: ScrollController(),
+                              child: _buildMapContent(),
+                            ),
+                          ),
+                        ],
+                  ),
                 );
               },
             );
@@ -118,10 +121,7 @@ class TaskPage extends GetView<TaskController> {
   Widget _buildMapContent() {
     return Column(
       children: <Widget>[
-        const Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: UiConstants.defaultPadding * 2),
-            child: User()),
+        const User(),
         const SizedBox(height: UiConstants.defaultPadding * 2),
         if (controller.task.value.latitude != null &&
             controller.task.value.longitude != null)

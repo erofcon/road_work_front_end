@@ -2,44 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:road_work_front_end/pages/detection_result/components/create_task.dart';
 import 'package:road_work_front_end/pages/detection_result/controller/detection_result_controller.dart';
+import 'package:road_work_front_end/pages/login/controller/login_controller.dart';
+import 'package:road_work_front_end/utils/constants.dart';
 
-class DetectionAppBar extends GetView<DetectionResultController>
+class DetectionAppBar extends GetView<LoginController>
     implements PreferredSizeWidget {
   const DetectionAppBar({Key? key}) : super(key: key);
 
   @override
-  Size get preferredSize => const Size.fromHeight(100);
+  Size get preferredSize => const Size.fromHeight(55);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      // leading: IconButton(
-      //   icon: const Icon(Icons.arrow_back),
-      //   onPressed: () {
-      //     // controller.clearSelectIndex();
-      //     controller.selectedIndex.clear();
-      //     // Get.back();
-      //   },
-      // ),
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            const DeleteImage(),
-            IconButton(
-                onPressed: () => Get.to(
-                      () => const CreateTask(),
-                      fullscreenDialog: true,
-                    ),
-                icon: Icon(
-                  Icons.edit,
-                  color: Theme.of(context).primaryColor,
-                )),
-            const UploadTaskButton(),
-          ],
-        ),
-      ),
+      actions: controller.user?.isCreator == true
+          ? [
+              const DeleteImage(),
+              IconButton(
+                  splashRadius: 20,
+                  onPressed: () => Get.dialog(const CreateTask()),
+                  icon: const Icon(
+                    Icons.edit,
+                  )),
+              const UploadTaskButton(),
+              const SizedBox(
+                width: UiConstants.defaultPadding,
+              )
+            ]
+          : [],
     );
   }
 }
@@ -49,19 +39,16 @@ class DeleteImage extends GetView<DetectionResultController> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      if (controller.isDeleteImage.isFalse) {
-        return IconButton(
-            onPressed: controller.deleteImage,
-            icon: Icon(
-              Icons.delete_forever_outlined,
-              color: Theme.of(context).primaryColor,
-            ));
-      } else {
-        return const SizedBox(
-            width: 24, height: 24, child: CircularProgressIndicator());
-      }
-    });
+    return IconButton(
+        splashRadius: 20,
+        onPressed: () {
+          if (controller.isDeleteImage.isFalse) {
+            controller.deleteImage();
+          }
+        },
+        icon: const Icon(
+          Icons.delete_forever_outlined,
+        ));
   }
 }
 
@@ -70,18 +57,15 @@ class UploadTaskButton extends GetView<DetectionResultController> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      if (controller.isUploadTask.isFalse) {
-        return IconButton(
-            onPressed: controller.createTask,
-            icon: Icon(
-              Icons.send_to_mobile_outlined,
-              color: Theme.of(context).primaryColor,
-            ));
-      } else {
-        return const SizedBox(
-            width: 24, height: 24, child: CircularProgressIndicator());
-      }
-    });
+    return IconButton(
+        splashRadius: 20,
+        onPressed: () {
+          if (controller.isUploadTask.isFalse) {
+            controller.createTask();
+          }
+        },
+        icon: const Icon(
+          Icons.send_to_mobile_outlined,
+        ));
   }
 }

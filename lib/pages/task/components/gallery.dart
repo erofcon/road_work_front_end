@@ -29,10 +29,9 @@ class Gallery extends GetView<TaskController> {
                 borderRadius:
                     BorderRadius.circular(UiConstants.defaultPadding * 2),
                 onTap: () {
-                  Get.to(() => ImageCarousel(
-                        currentIndex: i,
-                        images: controller.task.value.images,
-                      ));
+                  Get.dialog(ImageCarousel(
+                    currentIndex: i,
+                    images: controller.task.value.images,));
                 },
                 child: SizedBox(
                   width: 250,
