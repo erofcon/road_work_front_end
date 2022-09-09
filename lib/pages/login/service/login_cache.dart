@@ -10,7 +10,7 @@ mixin LoginCache {
 
     await box.write('user', user);
     await box.write('token', model.access);
-    await box.write('refresh', model.access);
+    await box.write('refresh', model.refresh);
   }
 
   Future<String?> getToken() async {
